@@ -22,6 +22,7 @@ public class Util {
 		UserDto userDto = new UserDto();
 		userDto.setUsername(user.getUsername());
 		userDto.setPassword(user.getPassword());
+		userDto.setEmail(user.getEmail());
 		return userDto;
 	}
 }
