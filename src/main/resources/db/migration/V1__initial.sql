@@ -1,0 +1,2 @@
+CREATE TABLE IF NOT EXISTS user (
+	username VARCHAR(45) NOT NULL);
