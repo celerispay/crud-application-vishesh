@@ -30,7 +30,7 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 					rawPassword, 
 					user.getAuthorities());
 		} else {
-			throw new BadCredentialsException("Invalid username or password");
+			throw new BadCredentialsException("Invalid credentials");
 		}
 	}
 

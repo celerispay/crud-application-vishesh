@@ -10,15 +10,33 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class RestExceptionHandler {
+public class RestExceptionHandler  {
 
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public List<String> validationException(MethodArgumentNotValidException ex) {
+	public List<String> handleValidationException(MethodArgumentNotValidException ex) {
 		return ex.getBindingResult()
 				.getFieldErrors()
 				.stream()
 				.map(error -> error.getDefaultMessage())
 				.collect(Collectors.toUnmodifiableList());
+	}
+
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(UserNotFoundException.class)
+	public String handleUserNotFoundException(UserNotFoundException ex) {
+		return ex.getMessage();
+	}
+
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(UsernameTakenException.class)
+	public String handleUsernameTakenException(UsernameTakenException ex) {
+		return ex.getMessage();
+	}
+	
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(EmailExistException.class)
+	public String handleEmailExistException(EmailExistException ex) {
+		return ex.getMessage();
 	}
 }

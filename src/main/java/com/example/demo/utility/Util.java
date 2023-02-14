@@ -2,6 +2,8 @@ package com.example.demo.utility;
 
 import java.util.UUID;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
 import com.example.demo.dto.AuthorityDto;
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.Authority;
@@ -24,5 +26,10 @@ public class Util {
 		userDto.setPassword(user.getPassword());
 		userDto.setEmail(user.getEmail());
 		return userDto;
+	}
+	
+	public static String encryptPassword(String rawPassword) {
+		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+		return  encoder.encode(rawPassword);
 	}
 }

@@ -11,7 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.example.demo.security.DemoAuthenticationProvider;
 
 @Configuration
-public class ProjectConfiguration  extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 	
 	@Autowired
 	private DemoAuthenticationProvider demoAuthenticationProvider;
@@ -28,8 +28,9 @@ public class ProjectConfiguration  extends WebSecurityConfigurerAdapter {
 	
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http.formLogin().and().httpBasic();
-		http.authorizeRequests().anyRequest().authenticated();
+		http.httpBasic();
+		http.authorizeRequests().mvcMatchers("/user/*").hasAnyRole("ADMIN", "MANAGER")
+		.anyRequest().permitAll();
 		http.csrf().disable();
 		http.cors().disable();
 	}
