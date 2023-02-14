@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
-import com.example.demo.exception.EmailExistException;
-import com.example.demo.exception.UserNotFoundException;
-import com.example.demo.exception.UsernameTakenException;
+import com.example.demo.exception.user.EmailExistException;
+import com.example.demo.exception.user.UserNotFoundException;
+import com.example.demo.exception.user.UsernameTakenException;
 import com.example.demo.service.UserService;
 
 @RestController
@@ -22,14 +22,14 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/user/{id}")
-	public UserDto getUser(@PathVariable String id) throws UserNotFoundException {
-		return userService.getUser(id);
+	@GetMapping("/user/{username}")
+	public UserDto getUser(@PathVariable String username) throws UserNotFoundException {
+		System.out.println("\n\ngetUser() triggered\n\n");
+		return userService.getUser(username);
 	}
 	
 	@PostMapping("/addUser")
 	public User addUser(@Valid @RequestBody User user) throws UsernameTakenException, EmailExistException {
-		userService.addUser(user);
-		return user;
+		return userService.addUser(user);
 	}
 }

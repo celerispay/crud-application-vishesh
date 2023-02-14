@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.example.demo.exception.user;
 
 public class EmailExistException extends Exception {
 	private static final long serialVersionUID = 1L;

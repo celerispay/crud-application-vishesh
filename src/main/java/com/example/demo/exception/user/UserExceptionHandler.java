@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.example.demo.exception.user;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,17 +10,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class RestExceptionHandler  {
-
-	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(MethodArgumentNotValidException.class)
-	public List<String> handleValidationException(MethodArgumentNotValidException ex) {
-		return ex.getBindingResult()
-				.getFieldErrors()
-				.stream()
-				.map(error -> error.getDefaultMessage())
-				.collect(Collectors.toUnmodifiableList());
-	}
+public class UserExceptionHandler  {
 
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(UserNotFoundException.class)
@@ -39,4 +29,6 @@ public class RestExceptionHandler  {
 	public String handleEmailExistException(EmailExistException ex) {
 		return ex.getMessage();
 	}
+	
+	
 }

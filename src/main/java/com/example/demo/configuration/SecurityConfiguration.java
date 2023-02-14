@@ -30,6 +30,7 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 	public void configure(HttpSecurity http) throws Exception {
 		http.httpBasic();
 		http.authorizeRequests().mvcMatchers("/user/*").hasAnyRole("ADMIN", "MANAGER")
+		.mvcMatchers("/addAuthority").hasRole("ADMIN")
 		.anyRequest().permitAll();
 		http.csrf().disable();
 		http.cors().disable();
