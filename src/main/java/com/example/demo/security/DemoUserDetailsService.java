@@ -19,10 +19,13 @@ public class DemoUserDetailsService implements UserDetailsService {
 	@Override
 	public DemoUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Supplier<UsernameNotFoundException> supplier = () -> {
+		System.out.println("User does not exists - Retrivial unsuccessful...");
 			return new UsernameNotFoundException("User not found");
 		};
+		System.out.println("Retriving user from database for authentication...");
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(supplier);
+		System.out.println("User exists - Retrivial successful...");
 		return new DemoUserDetails(user);
 	}
 

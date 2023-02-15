@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,7 +18,7 @@ public class UserDto {
 	private List<AuthorityDto> authorities;
 	
 	public UserDto() {
-		authorities = new ArrayList<>();
+		
 	}
 	
 	public UserDto(User user) {

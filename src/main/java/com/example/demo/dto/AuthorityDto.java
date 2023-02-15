@@ -1,6 +1,5 @@
 package com.example.demo.dto;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +13,7 @@ import lombok.Setter;
 @Setter
 public class AuthorityDto {
 	private String name;
-	private List<UserDto> users = new ArrayList<UserDto>();
+	private List<UserDto> users;
 	
 	public AuthorityDto() {
 		

@@ -26,12 +26,19 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 		String rawPassword = authentication.getCredentials().toString();
 		
 		DemoUserDetails user = demoUserDetailsService.loadUserByUsername(username);
-		
+	
+		System.out.println("Authenticating passsword...");
 		if (bCryptPasswordEncoder.matches(rawPassword, user.getPassword())) {
-			return new UsernamePasswordAuthenticationToken(username,
+			System.out.println("Password matched - Authentication successful...");
+			System.out.println("Lazily retriving user's authorities to create UsernamePasswordAuthenticationToken...");
+			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
 					rawPassword, 
 					user.getAuthorities());
+			System.out.println("Authorities retrived and UsernamePasswordAuthenticationToken created...");
+			System.out.println("Saving token in Spring Context...");
+			return token;
 		} else {
+			System.out.println("Password does not matched - Authentication unsuccessful...");
 			throw new BadCredentialsException("Invalid credentials");
 		}
 	}

@@ -36,7 +36,9 @@ public class Util {
 	}
 	
 	public static User setValues(User user) {
+		System.out.println("Generating user id...");
 		user.setId(getId());
+		System.out.println("Encrypting password...");
 		user.setPassword(encryptPassword(user.getPassword()));
 		
 		Authority a1 = new Authority();
@@ -47,6 +49,7 @@ public class Util {
 		a2.setId("5");
 		a2.setName("ROLE_USER");
 		
+		System.out.println("Setting READ authority and USER role...");
 		user.setAuthorities(Set.of(a1, a2));
 		
 		return user;

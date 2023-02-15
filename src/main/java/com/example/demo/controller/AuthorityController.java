@@ -27,7 +27,6 @@ public class AuthorityController {
 	
 	@PostMapping("/addAuthority")
 	public Authority addAuthority(@Valid @RequestBody Authority authority) {
-		System.out.println("\n\nTriggered\n\n");
 		return authorityService.addAuthority(authority);
 	}
 }

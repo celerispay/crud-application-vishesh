@@ -20,18 +20,25 @@ public class UserService {
 	private UserRepository userRepository;
 	
 	public User addUser(User user) throws UsernameTakenException, EmailExistException {
-		boolean usernameExist = userRepository.existsByUsername(user.getUsername());
-		boolean emailExist = userRepository.existsByEmail(user.getEmail());
+		System.out.println("Service - addUser() triggered");
 		
+		System.out.println("Checking if username already exists...");
+		boolean usernameExist = userRepository.existsByUsername(user.getUsername());
 		if (usernameExist) throw new UsernameTakenException();
+		
+		System.out.println("checking if user email algready exists...");
+		boolean emailExist = userRepository.existsByEmail(user.getEmail());
 		if (emailExist) throw new EmailExistException();
 		
 		Util.setValues(user);
 		
-		return userRepository.save(user);
+		userRepository.save(user);
+		
+		return user;
 	}
 
 	public UserDto getUser(String username) throws UserNotFoundException {
+		System.out.println("Service - getUser() triggered");
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {
 			return new UserDto(optionalUser.get());

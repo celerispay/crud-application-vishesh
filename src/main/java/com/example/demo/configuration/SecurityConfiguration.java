@@ -29,9 +29,10 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
 		http.httpBasic();
-		http.authorizeRequests().mvcMatchers("/user/*").hasAnyRole("ADMIN", "MANAGER")
-		.mvcMatchers("/addAuthority").hasRole("ADMIN")
-		.anyRequest().permitAll();
+		http.authorizeRequests()
+			.mvcMatchers("/addAuthority").hasRole("ADMIN")
+			.mvcMatchers("/user/*").hasAnyRole("ADMIN", "MANAGER")
+			.anyRequest().permitAll();
 		http.csrf().disable();
 		http.cors().disable();
 	}

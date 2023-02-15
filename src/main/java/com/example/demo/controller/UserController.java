@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,14 +23,21 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/user/{username}")
-	public UserDto getUser(@PathVariable String username) throws UserNotFoundException {
-		System.out.println("\n\ngetUser() triggered\n\n");
-		return userService.getUser(username);
+	@GetMapping("/test")
+	public String test() {
+		return "TEST";
 	}
 	
+	@GetMapping("/user/{username}")
+	public UserDto getUser(@PathVariable String username) throws UserNotFoundException {
+		System.out.println("Controller - getUser() triggered");
+		return userService.getUser(username);
+	}
+
 	@PostMapping("/addUser")
-	public User addUser(@Valid @RequestBody User user) throws UsernameTakenException, EmailExistException {
+	public User addUser(@Valid @RequestBody User user) throws UsernameTakenException, EmailExistException, MethodArgumentNotValidException {
+		System.out.println("addUser() triggered");
+		System.out.println("User: " + user);
 		return userService.addUser(user);
 	}
 }
