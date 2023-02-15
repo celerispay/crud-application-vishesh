@@ -9,4 +9,5 @@ import com.example.demo.entity.Authority;
 
 public interface AuthorityRepository extends CrudRepository<Authority, String> {
 	Optional<Authority> findByName(String name);
+	boolean existsByName(String name);
 }

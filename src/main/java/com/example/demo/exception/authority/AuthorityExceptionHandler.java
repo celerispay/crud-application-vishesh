@@ -13,4 +13,10 @@ public class AuthorityExceptionHandler {
 	public String handleAuthorityNotFoundException(AuthorityNotFoundException ex) {
 		return ex.getMessage();
 	}
+	
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(AuthorityExistException.class)
+	public String handleAuthorityExistException(AuthorityExistException ex) {
+		return ex.getMessage();
+	}
 }

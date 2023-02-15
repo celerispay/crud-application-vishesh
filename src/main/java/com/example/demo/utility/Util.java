@@ -35,9 +35,10 @@ public class Util {
 		return  encoder.encode(rawPassword);
 	}
 	
-	public static User setValues(User user) {
+	public static void setValues(User user) {
 		System.out.println("Generating user id...");
 		user.setId(getId());
+		user.setUsername(user.getUsername().toLowerCase());
 		System.out.println("Encrypting password...");
 		user.setPassword(encryptPassword(user.getPassword()));
 		
@@ -51,14 +52,11 @@ public class Util {
 		
 		System.out.println("Setting READ authority and USER role...");
 		user.setAuthorities(Set.of(a1, a2));
-		
-		return user;
 	}
 	
-	public static Authority setValues(Authority authority) {
+	public static void setValues(Authority authority) {
 		authority.setId(getId());
 		Set<User> s = new HashSet<>();
 		authority.setUsers(s);
-		return authority;
 	}
 }

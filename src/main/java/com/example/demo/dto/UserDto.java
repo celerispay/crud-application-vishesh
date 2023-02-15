@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.demo.entity.User;
@@ -15,10 +16,10 @@ public class UserDto {
 	private String username;
 	private String password;
 	private String email;
-	private List<AuthorityDto> authorities;
+	private Set<AuthorityDto> authorities;
 	
 	public UserDto() {
-		
+		authorities = new HashSet<>();
 	}
 	
 	public UserDto(User user) {
@@ -28,7 +29,7 @@ public class UserDto {
 		authorities = user.getAuthorities()
 				.stream()
 				.map(Util::toAuthorityDto)
-				.collect(Collectors.toUnmodifiableList());
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 

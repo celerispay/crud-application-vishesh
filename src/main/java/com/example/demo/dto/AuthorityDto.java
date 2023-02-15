@@ -1,6 +1,7 @@
 package com.example.demo.dto;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.example.demo.entity.Authority;
@@ -13,10 +14,10 @@ import lombok.Setter;
 @Setter
 public class AuthorityDto {
 	private String name;
-	private List<UserDto> users;
+	private Set<UserDto> users;
 	
 	public AuthorityDto() {
-		
+		users = new HashSet<>();
 	}
 	
 	public AuthorityDto(Authority authority) {
@@ -24,7 +25,7 @@ public class AuthorityDto {
 		users = authority.getUsers()
 				.stream()
 				.map(Util::toUserDto)
-				.collect(Collectors.toUnmodifiableList());
+				.collect(Collectors.toUnmodifiableSet());
 	}
 	
 	

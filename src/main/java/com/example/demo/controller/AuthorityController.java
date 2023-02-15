@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AuthorityDto;
 import com.example.demo.entity.Authority;
+import com.example.demo.exception.authority.AuthorityExistException;
 import com.example.demo.exception.authority.AuthorityNotFoundException;
 import com.example.demo.service.AuthorityService;
 
@@ -26,7 +27,7 @@ public class AuthorityController {
 	}
 	
 	@PostMapping("/addAuthority")
-	public Authority addAuthority(@Valid @RequestBody Authority authority) {
+	public Authority addAuthority(@Valid @RequestBody Authority authority) throws AuthorityExistException {
 		return authorityService.addAuthority(authority);
 	}
 }

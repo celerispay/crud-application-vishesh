@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.dto.AuthorityDto;
 import com.example.demo.entity.Authority;
+import com.example.demo.exception.authority.AuthorityExistException;
 import com.example.demo.exception.authority.AuthorityNotFoundException;
 import com.example.demo.repository.AuthorityRepository;
 import com.example.demo.utility.Util;
@@ -18,7 +19,6 @@ public class AuthorityService {
 	private AuthorityRepository authorityRepository;
 
 	public AuthorityDto getAuthority(String name) throws AuthorityNotFoundException {
-		System.out.println("\n" + name + "\n");
 		Optional<Authority> optionalAuthority = authorityRepository.findByName(name);
 		if (optionalAuthority.isPresent()) {
 			return new AuthorityDto(optionalAuthority.get());
@@ -27,8 +27,12 @@ public class AuthorityService {
 		}
 	}
 	
-	public Authority addAuthority(Authority authority) {
+	public Authority addAuthority(Authority authority) throws AuthorityExistException {
 		Util.setValues(authority);
+		
+		boolean authorityExist = authorityRepository.existsByName(authority.getName());
+		if (authorityExist) throw new AuthorityExistException();
+		
 		return authorityRepository.save(authority);
 	}
 }
