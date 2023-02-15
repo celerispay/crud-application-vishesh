@@ -1,7 +1,7 @@
 package com.example.demo.utility;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -47,15 +47,15 @@ public class Util {
 		a2.setId("5");
 		a2.setName("ROLE_USER");
 		
-		user.setAuthorities(List.of(a1, a2));
+		user.setAuthorities(Set.of(a1, a2));
 		
 		return user;
 	}
 	
 	public static Authority setValues(Authority authority) {
 		authority.setId(getId());
-		List<User> list = new ArrayList<>();
-		authority.setUsers(list);
+		Set<User> s = new HashSet<>();
+		authority.setUsers(s);
 		return authority;
 	}
 }

@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class DemoAuthenticationProvider implements AuthenticationProvider {
@@ -19,6 +20,7 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
+	@Transactional(readOnly = true)
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 		String username = authentication.getName();
 		String rawPassword = authentication.getCredentials().toString();

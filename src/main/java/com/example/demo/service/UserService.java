@@ -30,7 +30,7 @@ public class UserService {
 		
 		return userRepository.save(user);
 	}
-	
+
 	public UserDto getUser(String username) throws UserNotFoundException {
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {

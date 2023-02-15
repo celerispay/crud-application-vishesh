@@ -1,8 +1,9 @@
 package com.example.demo.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
@@ -22,6 +23,6 @@ public class Authority {
 	@NotBlank(message="Name cannot be blank")
 	private String name;
 
-	@ManyToMany(mappedBy = "authorities")
-	private List<User> users;
+	@ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
+	private Set<User> users;
 }

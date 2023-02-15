@@ -16,7 +16,7 @@ public class AuthorityService {
 	
 	@Autowired
 	private AuthorityRepository authorityRepository;
-	
+
 	public AuthorityDto getAuthority(String name) throws AuthorityNotFoundException {
 		System.out.println("\n" + name + "\n");
 		Optional<Authority> optionalAuthority = authorityRepository.findByName(name);

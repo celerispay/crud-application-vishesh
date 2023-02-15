@@ -1,6 +1,6 @@
 package com.example.demo.entity;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -33,10 +33,10 @@ public class User {
 	@Email(message = "Invalid email")
 	private String email;
 
-	@ManyToMany(fetch = FetchType.EAGER)
+	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(
 			  name = "user_authority", 
 			  joinColumns = @JoinColumn(name = "user_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "authority_id"))
-	private List<Authority> authorities;
+	private Set<Authority> authorities;
 }
