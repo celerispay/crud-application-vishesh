@@ -11,8 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.dto.AuthorityDto;
 import com.example.demo.entity.Authority;
-import com.example.demo.exception.authority.AuthorityExistException;
-import com.example.demo.exception.authority.AuthorityNotFoundException;
+import com.example.demo.exception.AuthorityException;
 import com.example.demo.service.AuthorityService;
 
 @RestController
@@ -22,12 +21,12 @@ public class AuthorityController {
 	private AuthorityService authorityService;
 	
 	@GetMapping("/authority/{name}")
-	public AuthorityDto getAuthority(@PathVariable String name) throws AuthorityNotFoundException {
+	public AuthorityDto getAuthority(@PathVariable String name) throws AuthorityException {
 		return authorityService.getAuthority(name);
 	}
 	
 	@PostMapping("/addAuthority")
-	public Authority addAuthority(@Valid @RequestBody Authority authority) throws AuthorityExistException {
+	public Authority addAuthority(@Valid @RequestBody Authority authority) throws AuthorityException {
 		return authorityService.addAuthority(authority);
 	}
 }

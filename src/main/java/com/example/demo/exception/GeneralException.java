@@ -21,4 +21,10 @@ public class GeneralException {
 				.map(error -> error.getDefaultMessage())
 				.collect(Collectors.toUnmodifiableList());
 	}
+
+	@ResponseStatus(code =HttpStatus.BAD_REQUEST)	
+	@ExceptionHandler(UserException.class)
+	public String handleInvalidUserException(UserException ex) {
+		return ex.getMessage();
+	}
 }

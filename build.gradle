@@ -3,14 +3,6 @@ plugins {
 	id 'org.springframework.boot' version '2.3.12.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.11.RELEASE'
 	id 'eclipse' 
-	id "org.flywaydb.flyway" version "9.8.1"
-}
-
-flyway {
-    url = 'jdbc:mysql://localhost:3306'
-    user = 'root'
-    
-    schemas = ['user']
 }
 
 group = 'com.example'
