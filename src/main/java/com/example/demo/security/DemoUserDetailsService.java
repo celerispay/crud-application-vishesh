@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2
 @Service
 public class DemoUserDetailsService implements UserDetailsService {
 	
@@ -19,13 +22,13 @@ public class DemoUserDetailsService implements UserDetailsService {
 	@Override
 	public DemoUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		Supplier<UsernameNotFoundException> supplier = () -> {
-		System.out.println("User does not exists - Retrivial unsuccessful...");
-			return new UsernameNotFoundException("User not found");
+			log.error("Authentication failed.");
+			return new UsernameNotFoundException("User not found.");
 		};
-		System.out.println("Retriving user from database for authentication...");
+		
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(supplier);
-		System.out.println("User exists - Retrivial successful...");
+		
 		return new DemoUserDetails(user);
 	}
 

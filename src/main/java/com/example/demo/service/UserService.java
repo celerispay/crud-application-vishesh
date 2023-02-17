@@ -19,8 +19,7 @@ public class UserService {
 	
 	public User addUser(User user) throws UserException {
 		System.out.println("Service - addUser() triggered");
-		
-		System.out.println("Checking if username already exists...");
+	
 		boolean usernameExist = userRepository.existsByUsername(user.getUsername());
 		if (usernameExist) throw new UserException("Username already taken");
 		

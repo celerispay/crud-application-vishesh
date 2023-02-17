@@ -1,0 +1,6 @@
+18:29:41.156 [36mTRACE[m com.example.demo.security.DemoAuthenticationProvider - Validating username and password.
+18:29:41.307 [32mINFO[m com.example.demo.security.DemoAuthenticationProvider - Validation successful.
+18:30:07.760 [36mTRACE[m com.example.demo.security.DemoAuthenticationProvider - Validating username and password.
+18:31:35.218 [36mTRACE[m com.example.demo.security.DemoAuthenticationProvider - Validating username and password.
+18:34:04.384 [36mTRACE[m com.example.demo.security.DemoAuthenticationProvider - Validating username and password.
+18:34:04.457 [31mERROR[m com.example.demo.security.DemoUserDetailsService - Invalid username or password
