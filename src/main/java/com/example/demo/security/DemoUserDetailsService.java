@@ -10,6 +10,9 @@ import org.springframework.stereotype.Service;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2(topic = "LogStep")
 @Service
 public class DemoUserDetailsService implements UserDetailsService {
 	
@@ -18,7 +21,9 @@ public class DemoUserDetailsService implements UserDetailsService {
 
 	@Override
 	public DemoUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
 		Supplier<UsernameNotFoundException> supplier = () -> {
+			log.debug("Authentication failed !!");
 			return new UsernameNotFoundException("User not found.");
 		};
 		

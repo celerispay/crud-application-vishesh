@@ -17,7 +17,7 @@ import com.example.demo.service.UserService;
 
 import lombok.extern.log4j.Log4j2;
 
-@Log4j2
+@Log4j2(topic = "LogStep")
 @RestController
 public class UserController {
 	
@@ -26,17 +26,19 @@ public class UserController {
 	
 	@GetMapping("/test")
 	public String test() {
+		log.debug("UserController triggered");
 		return "TEST";
 	}
 	
 	@GetMapping("/user/{username}")
 	public UserDto getUser(@PathVariable String username) throws UserException {
+		log.debug("UserController triggered");
 		return userService.getUser(username);
 	}
 
 	@PostMapping("/addUser")
 	public User addUser(@Valid @RequestBody User user) throws UserException {
-		log.trace("Adding user");
+		log.debug("UserController triggered");
 		return userService.addUser(user);
 	}
 }

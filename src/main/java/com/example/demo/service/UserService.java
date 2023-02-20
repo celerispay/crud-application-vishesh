@@ -11,6 +11,9 @@ import com.example.demo.exception.UserException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utility.Util;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2(topic = "LogStep")
 @Service
 public class UserService {
 
@@ -18,12 +21,11 @@ public class UserService {
 	private UserRepository userRepository;
 	
 	public User addUser(User user) throws UserException {
-		System.out.println("Service - addUser() triggered");
+		log.debug("UserService triggered");
 	
 		boolean usernameExist = userRepository.existsByUsername(user.getUsername());
 		if (usernameExist) throw new UserException("Username already taken");
 		
-		System.out.println("checking if user email algready exists...");
 		boolean emailExist = userRepository.existsByEmail(user.getEmail());
 		if (emailExist) throw new UserException("Email already exists");
 		
@@ -35,7 +37,7 @@ public class UserService {
 	}
 
 	public UserDto getUser(String username) throws UserException {
-		System.out.println("Service - getUser() triggered");
+		log.debug("UserService triggered");
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {
 			return new UserDto(optionalUser.get());

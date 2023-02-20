@@ -10,6 +10,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import lombok.extern.log4j.Log4j2;
+
+@Log4j2(topic = "LogStep")
 @Service
 public class DemoAuthenticationProvider implements AuthenticationProvider {
 	
@@ -22,17 +25,21 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 	@Override
 	@Transactional(readOnly = true)
 	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+		log.debug("Authenticating...");
+		
 		String username = authentication.getName();
 		String rawPassword = authentication.getCredentials().toString();
 	
 		DemoUserDetails user = demoUserDetailsService.loadUserByUsername(username);
 
 		if (bCryptPasswordEncoder.matches(rawPassword, user.getPassword())) {
+			log.debug("Authentication successful !!");
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
 					rawPassword, 
 					user.getAuthorities());
 			return token;
 		} else {
+			log.debug("Authentication failed !!");
 			throw new BadCredentialsException("Invalid credentials.");
 		}
 	}
