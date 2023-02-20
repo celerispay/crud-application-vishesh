@@ -7,6 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,6 +21,7 @@ public class Authority {
 	@Id
 	private String id;
 
+	@Size(min=2, max=45, message="Authority must contains character between 2 and 45 characters (Inclusive)")
 	@NotBlank(message="Name cannot be blank")
 	private String name;
 

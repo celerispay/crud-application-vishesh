@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 
 import com.example.demo.security.DemoAuthenticationProvider;
 
@@ -36,4 +37,16 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 		http.csrf().disable();
 		http.cors().disable();
 	}
+	
+	 @Bean
+	    public CommonsRequestLoggingFilter logFilter() {
+	        CommonsRequestLoggingFilter filter
+	          = new CommonsRequestLoggingFilter();
+	        filter.setIncludeQueryString(true);
+	        filter.setIncludePayload(true);
+	        filter.setMaxPayloadLength(10000);
+	        filter.setIncludeHeaders(false);
+	        filter.setAfterMessagePrefix("REQUEST DATA: ");
+	        return filter;
+	    }
 }
