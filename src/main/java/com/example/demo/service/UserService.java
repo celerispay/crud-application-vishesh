@@ -13,7 +13,7 @@ import com.example.demo.utility.Util;
 
 import lombok.extern.log4j.Log4j2;
 
-@Log4j2(topic = "LogStep")
+@Log4j2
 @Service
 public class UserService {
 
@@ -22,7 +22,7 @@ public class UserService {
 	
 	public User addUser(User user) throws UserException {
 		log.debug("UserService triggered");
-	
+			
 		boolean usernameExist = userRepository.existsByUsername(user.getUsername());
 		if (usernameExist) throw new UserException("Username already taken");
 		
@@ -38,6 +38,13 @@ public class UserService {
 
 	public UserDto getUser(String username) throws UserException {
 		log.debug("UserService triggered");
+
+		log.trace("UserService TRACE triggered");
+		log.trace("UserService DEBUG triggered");
+		log.trace("UserService INFO triggered");
+		log.trace("UserService ERROR triggered");
+		log.trace("UserService FATAL triggered");
+
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {
 			return new UserDto(optionalUser.get());
