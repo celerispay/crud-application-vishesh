@@ -6,7 +6,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +20,7 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 	private DemoUserDetailsService demoUserDetailsService;
 
 	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
+	private PasswordEncoder passwordEncoder;
 
 	@Override
 	@Transactional(readOnly = true)
@@ -31,8 +31,12 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 		String rawPassword = authentication.getCredentials().toString();
 	
 		DemoUserDetails user = demoUserDetailsService.loadUserByUsername(username);
+		log.trace("Requet Username: " + username);
+		log.trace("Requet Password: " + rawPassword);
+		log.trace("Database Username: " + user.getUsername());
+		log.trace("Database Password: " + user.getPassword());
 
-		if (bCryptPasswordEncoder.matches(rawPassword, user.getPassword())) {
+		if (passwordEncoder.matches(rawPassword, user.getPassword())) {
 			log.debug("Authentication successful !!");
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
 					rawPassword, 

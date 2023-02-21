@@ -30,7 +30,7 @@ public class User {
 	private String username;
 
 	@NotBlank(message="Please provide a password")
-	@Length(min=5, message="Invalid password - Password atleast be 5 characters long")
+	@Length(min=5, max=25, message="Invalid password - Password atleast be 5 characters long and should contains less than or equals to 25 characeters")
 	private String password;
 
 	@NotBlank(message="Please provide an email")

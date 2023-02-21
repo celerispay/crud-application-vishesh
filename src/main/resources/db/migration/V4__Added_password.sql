@@ -1,2 +1,2 @@
 ALTER TABLE user
-	ADD password TEXT NOT NULL;
+	ADD password varchar(255) NOT NULL;
