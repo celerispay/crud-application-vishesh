@@ -12,11 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import lombok.extern.log4j.Log4j2;
 
+@Log4j2
 @Service
 public class DemoAuthenticationProvider implements AuthenticationProvider {
 
-	 private static final org.apache.logging.log4j.Logger log = org.apache.logging.log4j.LogManager.getLogger(DemoAuthenticationProvider.class);
-	
 	@Autowired
 	private DemoUserDetailsService demoUserDetailsService;
 
