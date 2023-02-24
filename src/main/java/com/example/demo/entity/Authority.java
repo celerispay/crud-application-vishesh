@@ -9,6 +9,7 @@ import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -17,6 +18,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@EqualsAndHashCode
 public class Authority {
 	@Id
 	private String id;
@@ -26,5 +28,6 @@ public class Authority {
 	private String name;
 
 	@ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
+	@EqualsAndHashCode.Exclude
 	private Set<User> users;
 }

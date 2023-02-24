@@ -7,11 +7,13 @@ import java.util.stream.Collectors;
 import com.example.demo.entity.User;
 import com.example.demo.utility.Util;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@EqualsAndHashCode
 public class UserDto {
 	private String username;
 	private String password;
