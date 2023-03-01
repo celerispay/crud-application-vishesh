@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -14,7 +15,6 @@ import javax.validation.constraints.NotBlank;
 import org.hibernate.validator.constraints.Length;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -23,7 +23,6 @@ import lombok.ToString;
 @Setter
 @Getter
 @ToString
-@EqualsAndHashCode
 public class User {
 	@Id
 	private String id;
@@ -38,6 +37,11 @@ public class User {
 	@ApiModelProperty(value = "The User's password")
 	private String password;
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(authorities);
+	}
+
 	@NotBlank(message="Please provide an email")
 	@Email(message = "Invalid email")
 	@ApiModelProperty(value = "The User's email")
@@ -49,8 +53,5 @@ public class User {
 			  name = "user_authority", 
 			  joinColumns = @JoinColumn(name = "user_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "authority_id"))
-	@EqualsAndHashCode.Exclude
 	private Set<Authority> authorities;
-	
-	
 }

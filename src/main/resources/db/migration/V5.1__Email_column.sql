@@ -1,6 +1,6 @@
 ALTER TABLE user
-	ADD COLUMN email varchar(254) NOT NULL UNIQUE AFTER password;
+	ADD COLUMN email varchar(254) UNIQUE AFTER password;
 	
 UPDATE user 
-	SET email="john@gmail.com" 
-	WHERE username="John";
+	SET email='john@gmail.com' 
+	WHERE username='John';

@@ -2,8 +2,10 @@ package com.example.demo.dto;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
 import com.example.demo.utility.Util;
 
@@ -28,10 +30,32 @@ public class UserDto {
 		username = user.getUsername();
 		password = user.getPassword();
 		email = user.getEmail();
-		authorities = user.getAuthorities()
-				.stream()
-				.map(Util::toAuthorityDto)
-				.collect(Collectors.toUnmodifiableSet());
+	
+		Function<Authority, AuthorityDto> toAuthorityDto = (authority) -> {
+			System.out.println("Hit");
+			AuthorityDto authorityDto = new AuthorityDto();
+			authorityDto.setName(authority.getName());
+			return authorityDto;
+		};
+	
+		System.out.println("\nStart\n");
+		
+//		authorities = user.getAuthorities()
+//						  .stream()
+//						  .map(toAuthorityDto)
+//						  .collect(Collectors.toUnmodifiableSet());
+		
+		//Set<Authority> temp = user.getAuthorities();
+		//temp.size();
+		
+		user.getAuthorities().forEach(authority -> authority.setUsers(null));
+		
+		//temp.stream()
+		//.map(toAuthorityDto)
+		//.collect(Collectors.toUnmodifiableSet());
+		
+		System.out.println("\nEnd\n");
+		
 	}
 	
 

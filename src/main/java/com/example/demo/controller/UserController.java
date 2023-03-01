@@ -10,9 +10,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
+import com.example.demo.exception.AuthorityException;
 import com.example.demo.exception.UserException;
 import com.example.demo.service.UserService;
 
@@ -39,8 +41,14 @@ public class UserController {
 	}
 
 	@PostMapping("/addUser")
-	public User addUser(@Valid @RequestBody User user) throws UserException {
+	public User addUser(@Valid @RequestBody User user) throws UserException, AuthorityException {
 		log.debug("UserController triggered");
 		return userService.addUser(user);
+	}
+
+	@GetMapping("/write")
+	public String test() {
+		System.out.println("\n\n\n\n\n\n");
+		return "The cat is in the box";
 	}
 }

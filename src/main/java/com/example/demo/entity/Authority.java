@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.util.Objects;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -18,8 +19,12 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@EqualsAndHashCode
 public class Authority {
+	@Override
+	public int hashCode() {
+		return Objects.hash(users);
+	}
+
 	@Id
 	private String id;
 
@@ -28,6 +33,5 @@ public class Authority {
 	private String name;
 
 	@ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
-	@EqualsAndHashCode.Exclude
 	private Set<User> users;
 }

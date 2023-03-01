@@ -1,18 +1,30 @@
 package com.example.demo.service;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.BDDMockito.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.example.demo.dto.UserDto;
+import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
+import com.example.demo.exception.AuthorityException;
+import com.example.demo.exception.UserException;
+import com.example.demo.repository.AuthorityRepository;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.utility.Message;
+import com.example.demo.utility.Util;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
@@ -23,26 +35,54 @@ class UserServiceTest {
 	@InjectMocks
 	private UserService userService;
 	
-	@Test
-	void giveUserEntity_whenUserDoesNotExistsAndSave_thenReturnUserEntity() {
-		String username = "abc";
-		given(userRepository.findByUsername(username)).willReturn(Optional.of(generateUser()));
-		User expected = generateUser();
-		User actual = userRepository.findByUsername(username).get();
-		assertEquals(actual, expected);
+	private User user;
+	
+	@BeforeEach
+	public void initializeUser() {
+		User u = new User();
+		u.setUsername("foo");
+		u.setEmail("foo@abc.com");
+		u.setPassword("12345");
+		user = u;
 	}
 
 	@Test
-	void testGetUser() {
-		fail("Not yet implemented");
+	public void addUser_whenUsernameIsTaken() {
+		Mockito.when(userRepository.existsByUsername("foo")).thenReturn(true);
+		assertThatThrownBy(() -> {
+			userService.addUser(user);
+		}).isInstanceOf(UserException.class)
+		.hasMessage(Message.USERNAME_TAKEN);
 	}
 	
-	private User generateUser() {
-		User user = new User();
-		user.setUsername("abc");
-		user.setPassword("12345");
-		user.setEmail("abc@gmail.com");
+	@Test
+	public void addUser_whenEmailyIsInUse() {
+		Mockito.when(userRepository.existsByEmail("foo@abc.com")).thenReturn(true);
+		assertThatThrownBy(() ->{ userService.addUser(user);})
+		.isInstanceOf(UserException.class)
+		.hasMessage(Message.EMAIL_ALREADY_IN_USE);
+	}
+
+	@Test
+	public void addUser_checkIfUserIdIsGenerated() throws UserException, AuthorityException {
+		User u = userService.addUser(user);
+		assertThat(u.getId())
+		.isNotNull()
+		.hasSize(36);
+	}
+
+	@Test
+	public void addUser_checkIfPasswordIsEncrypted() throws UserException, AuthorityException {
+		User u = userService.addUser(user);
+		assertThat(u.getPassword())
+		.isNotEqualTo("12345");
+	}
 	
-		return user;
+	@Test
+	public void getUser_whenUserDoesNotExists() {
+		Mockito.when(userRepository.findByUsername("bar")).thenReturn(Optional.empty());
+		assertThatThrownBy(() -> userService.getUser("bar"))
+		.isInstanceOf(UserException.class)
+		.hasMessage(Message.USER_NOT_FOUND);
 	}
 }

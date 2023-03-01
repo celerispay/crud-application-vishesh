@@ -1,4 +1,4 @@
-package com.example.demo.exception;
+package com.example.demo.exceptionhandler;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +9,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.example.demo.exception.UserException;
+
 @RestControllerAdvice
-public class GeneralException {
+public class GlobalExceptionHandler {
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public List<String> handleValidationException(MethodArgumentNotValidException ex) {

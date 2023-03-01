@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
 
@@ -30,7 +31,9 @@ public class DemoUserDetailsService implements UserDetailsService {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(supplier);
 		
-		return new DemoUserDetails(user);
+		UserDto userDto = new UserDto(user);
+		
+		return new DemoUserDetails(userDto);
 	}
 
 }

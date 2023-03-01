@@ -21,7 +21,7 @@ public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 	private DemoAuthenticationProvider demoAuthenticationProvider;
 	
 	@Bean
-	@Profile(value = { "default" })
+	@Profile(value = { "test", "prod", "qa"})
 	public PasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}

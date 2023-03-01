@@ -35,12 +35,13 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 		log.trace("Requet Password: " + rawPassword);
 		log.trace("Database Username: " + user.getUsername());
 		log.trace("Database Password: " + user.getPassword());
-
+		
 		if (passwordEncoder.matches(rawPassword, user.getPassword())) {
 			log.debug("Authentication successful !!");
 			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
-					rawPassword, 
-					user.getAuthorities());
+					rawPassword,
+					user.getAuthorities()
+					);
 			return token;
 		} else {
 			log.debug("Authentication failed !!");
