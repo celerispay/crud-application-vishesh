@@ -43,10 +43,4 @@ public class UserController {
 		log.debug("UserController triggered");
 		return userService.addUser(user);
 	}
-
-	@GetMapping("/write")
-	public String test() {
-		System.out.println("\n\n\n\n\n\n");
-		return "The cat is in the box";
-	}
 }

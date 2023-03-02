@@ -12,7 +12,9 @@ import com.example.demo.entity.User;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @DataJpaTest
@@ -36,14 +38,14 @@ class UserRepositoryTest {
 		Authority a1 = new Authority();
 		a1.setId("ccaf4000-e8c1-4435-aa8b-f0bd98aa60f3");
 		a1.setName("alpha");
-		a1.setUsers(new HashSet<>());
+		a1.setUsers(new ArrayList<>());
 		
 		Authority a2 = new Authority();
 		a2.setId("dd18101d-241f-43d1-bb2a-0116a7f5a548");
 		a2.setName("beta");
-		a2.setUsers(new HashSet<>());
+		a2.setUsers(new ArrayList<>());
 		
-		user.setAuthorities(Set.of(a1, a2));
+		user.setAuthorities(List.of(a1, a2));
 		
 		this.user = user;
 	}
@@ -57,17 +59,15 @@ class UserRepositoryTest {
 	@Test
 	public void findByUsername_checkEverythinExceptAuthorities() {
 		User user = userRepository.findByUsername("foo").get();
-		user.setAuthorities(new HashSet<>());
-		this.user.setAuthorities(new HashSet<>());
+		user.setAuthorities(new ArrayList<>());
+		this.user.setAuthorities(new ArrayList<>());
 		assertThat(user.equals(this.user)).isTrue();
-		//assertThat(user).usingRecursiveComparison().isEqualTo(this.user);
 	}
 	
 	@Test
 	public void findByUsername_checkAuthorities() {
 		User user = userRepository.findByUsername("foo").get();
-		assertThat(user.getAuthorities().equals(this.user.getAuthorities())).isTrue();
-		//assertThat(user.getAuthorities()).containsExactlyInAnyOrderElementsOf(this.user.getAuthorities());
+		assertThat(user.toString()).isEqualTo(this.user.toString());
 	}
 	
 	@Test

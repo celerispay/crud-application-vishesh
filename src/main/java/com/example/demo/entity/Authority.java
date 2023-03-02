@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -27,11 +29,11 @@ public class Authority {
 	private String name;
 
 	@ManyToMany(mappedBy = "authorities", fetch = FetchType.LAZY)
-	private Set<User> users;
+	private List<User> users;
 
 	@Override
 	public int hashCode() {
-		users.forEach(user -> user.setAuthorities(new HashSet<>()));
+		users.forEach(user -> user.setAuthorities(new ArrayList<>()));
 		return Objects.hash(id, name, users);
 	}
 
@@ -44,10 +46,14 @@ public class Authority {
 		if (getClass() != obj.getClass())
 			return false;
 		Authority other = (Authority) obj;
-		users.forEach(user -> user.setAuthorities(new HashSet<>()));
-		other.getUsers().forEach(user -> user.setAuthorities(new HashSet<>()));
+		users.forEach(user -> user.setAuthorities(new ArrayList<>()));
+		other.getUsers().forEach(user -> user.setAuthorities(new ArrayList<>()));
 		return Objects.equals(id, other.id) && Objects.equals(name, other.name) && Objects.equals(users, other.users);
 	}
 
-	
+	@Override
+	public String toString() {
+		users.forEach(user -> user.setAuthorities(new ArrayList<>()));
+		return "Authority [id=" + id + ", name=" + name + ", users=" + users + "]";
+	}
 }

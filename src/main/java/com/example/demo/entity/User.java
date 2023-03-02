@@ -1,6 +1,8 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,11 +49,11 @@ public class User {
 			  name = "user_authority", 
 			  joinColumns = @JoinColumn(name = "user_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "authority_id"))
-	private Set<Authority> authorities;
+	private List<Authority> authorities;
 
 	@Override
 	public int hashCode() {
-		authorities.forEach(authority -> authority.setUsers(new HashSet<>()));
+		authorities.forEach(authority -> authority.setUsers(new ArrayList<>()));
 		return Objects.hash(authorities, email, id, password, username);
 	}
 
@@ -64,10 +66,17 @@ public class User {
 		if (getClass() != obj.getClass())
 			return false;
 		User other = (User) obj;
-		authorities.forEach(authority -> authority.setUsers(new HashSet<>()));
-		other.getAuthorities().forEach(authority -> authority.setUsers(new HashSet<>()));
+		authorities.forEach(authority -> authority.setUsers(new ArrayList<>()));
+		other.getAuthorities().forEach(authority -> authority.setUsers(new ArrayList<>()));
 		return Objects.equals(authorities, other.authorities) && Objects.equals(email, other.email)
 				&& Objects.equals(id, other.id) && Objects.equals(password, other.password)
 				&& Objects.equals(username, other.username);
+	}
+
+	@Override
+	public String toString() {
+		authorities.forEach(authority -> authority.setUsers(new ArrayList<>()));
+		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
+				+ ", authorities=" + authorities + "]";
 	}
 }
