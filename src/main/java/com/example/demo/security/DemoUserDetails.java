@@ -7,13 +7,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.demo.dto.UserDto;
+import com.example.demo.entity.User;
 
 public class DemoUserDetails implements UserDetails {
 	private static final long serialVersionUID = 1L;
-	private final UserDto user;
+	private final User user;
 	
-	public DemoUserDetails(UserDto user) {
+	public DemoUserDetails(User user) {
 		this.user = user;
 	}
 

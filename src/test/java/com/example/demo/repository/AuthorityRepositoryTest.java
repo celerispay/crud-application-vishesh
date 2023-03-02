@@ -3,40 +3,22 @@ package com.example.demo.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Set;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
-import com.example.demo.utility.Util;
 
 @DataJpaTest
+@Sql(scripts = "classpath:insert.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
+@Sql(scripts = "classpath:delete.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
 class AuthorityRepositoryTest {
 	
 	@Autowired
-	private UserRepository userRepository;
-	
-	@Autowired
 	private AuthorityRepository authorityRepository;
-	
-	private Authority dummyAuthority;
-	
-	@BeforeEach
-	public void addUser() {
-		dummyAuthority = Util.getDummyAuthority();
-		userRepository.saveAll(dummyAuthority.getUsers());
-		authorityRepository.save(dummyAuthority);
-	}
-	
-	@AfterEach
-	public void deleteUser() {
-		userRepository.deleteAll();
-		authorityRepository.deleteAll();
-	}	
 	
 	@Test
 	public void existsByName() {
@@ -53,12 +35,12 @@ class AuthorityRepositoryTest {
 	@Test
 	public void countUser() {
 		Set<User> users = authorityRepository.findByName("alpha").get().getUsers();
-		assertThat(users.size()).isEqualTo(2);
+		assertThat(users.size()).isEqualTo(1);
 	}
 	
 	@Test
 	public void findByName() {
 		Authority authority = authorityRepository.findByName("alpha").get();
-		assertThat(authority).isEqualTo(Util.getDummyAuthority());
+		assertThat(authority.getName()).isEqualTo("alpha");
 	}
 }

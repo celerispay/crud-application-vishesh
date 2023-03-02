@@ -7,9 +7,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
+import com.example.demo.utility.Util;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -31,9 +31,7 @@ public class DemoUserDetailsService implements UserDetailsService {
 		User user = userRepository.findByUsername(username)
 				.orElseThrow(supplier);
 		
-		UserDto userDto = new UserDto(user);
-		
-		return new DemoUserDetails(userDto);
+		return new DemoUserDetails(user);
 	}
 
 }

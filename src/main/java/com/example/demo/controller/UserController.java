@@ -10,9 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.exception.AuthorityException;
 import com.example.demo.exception.UserException;
@@ -33,8 +31,8 @@ public class UserController {
 	@GetMapping("/user/{username}")
 	@ApiOperation(value = "Find user by username", // summary
 			notes = "Provide a username to look up specific user from users database", // description
-			response = UserDto.class)
-	public UserDto getUser( @ApiParam(value = "Username value for the User you need to retrieve", required = true)
+			response = User.class)
+	public User getUser( @ApiParam(value = "Username value for the User you need to retrieve", required = true)
 			@PathVariable String username) throws UserException {
 		log.debug("UserController triggered");
 		return userService.getUser(username);

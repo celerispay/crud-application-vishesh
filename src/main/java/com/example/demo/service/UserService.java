@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.UserDto;
 import com.example.demo.entity.User;
 import com.example.demo.exception.AuthorityException;
 import com.example.demo.exception.UserException;
@@ -33,10 +32,11 @@ public class UserService {
 		return user;
 	}
 		
-	public UserDto getUser(String username) throws UserException {
+	public User getUser(String username) throws UserException {
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {
-			return new UserDto(optionalUser.get());
+			User user = optionalUser.get();
+			return user;
 		} else {
 			throw new UserException(Message.USER_NOT_FOUND);
 		}

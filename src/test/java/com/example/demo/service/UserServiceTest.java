@@ -3,11 +3,8 @@ package com.example.demo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,15 +13,11 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.demo.dto.UserDto;
-import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
 import com.example.demo.exception.AuthorityException;
 import com.example.demo.exception.UserException;
-import com.example.demo.repository.AuthorityRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utility.Message;
-import com.example.demo.utility.Util;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {

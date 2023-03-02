@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.dto.AuthorityDto;
 import com.example.demo.entity.Authority;
 import com.example.demo.exception.AuthorityException;
 import com.example.demo.service.AuthorityService;
@@ -23,7 +22,7 @@ public class AuthorityController {
 	private AuthorityService authorityService;
 	
 	@GetMapping("/authority/{name}")
-	public AuthorityDto getAuthority(@PathVariable String name) throws AuthorityException {
+	public Authority getAuthority(@PathVariable String name) throws AuthorityException {
 		return authorityService.getAuthority(name);
 	}
 	

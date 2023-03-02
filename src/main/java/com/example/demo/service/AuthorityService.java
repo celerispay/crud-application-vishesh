@@ -5,7 +5,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.demo.dto.AuthorityDto;
 import com.example.demo.entity.Authority;
 import com.example.demo.exception.AuthorityException;
 import com.example.demo.repository.AuthorityRepository;
@@ -19,10 +18,10 @@ public class AuthorityService {
 	private AuthorityRepository authorityRepository;
 	
 
-	public AuthorityDto getAuthority(String name) throws AuthorityException {
+	public Authority getAuthority(String name) throws AuthorityException {
 		Optional<Authority> optionalAuthority = authorityRepository.findByName(name);
 		if (optionalAuthority.isPresent()) {
-			return new AuthorityDto(optionalAuthority.get());
+			return optionalAuthority.get();
 		} else {
 			throw new AuthorityException(Message.AUTHORITY_NOT_FOUND);
 		}

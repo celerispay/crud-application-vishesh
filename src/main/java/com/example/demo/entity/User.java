@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
@@ -17,12 +18,10 @@ import org.hibernate.validator.constraints.Length;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Setter
 @Getter
-@ToString
 public class User {
 	@Id
 	private String id;
@@ -33,14 +32,9 @@ public class User {
 	private String username;
 
 	@NotBlank(message="Please provide a password")
-	@Length(min=5, max=25, message="Invalid password - Password atleast be 5 characters long and should contains less than or equals to 25 characeters")
+	//@Length(min=5, max=25, message="Invalid password - Password atleast be 5 characters long and should contains less than or equals to 25 characeters")
 	@ApiModelProperty(value = "The User's password")
 	private String password;
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(authorities);
-	}
 
 	@NotBlank(message="Please provide an email")
 	@Email(message = "Invalid email")
@@ -54,4 +48,26 @@ public class User {
 			  joinColumns = @JoinColumn(name = "user_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "authority_id"))
 	private Set<Authority> authorities;
+
+	@Override
+	public int hashCode() {
+		authorities.forEach(authority -> authority.setUsers(new HashSet<>()));
+		return Objects.hash(authorities, email, id, password, username);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		User other = (User) obj;
+		authorities.forEach(authority -> authority.setUsers(new HashSet<>()));
+		other.getAuthorities().forEach(authority -> authority.setUsers(new HashSet<>()));
+		return Objects.equals(authorities, other.authorities) && Objects.equals(email, other.email)
+				&& Objects.equals(id, other.id) && Objects.equals(password, other.password)
+				&& Objects.equals(username, other.username);
+	}
 }
