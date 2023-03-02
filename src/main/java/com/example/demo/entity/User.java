@@ -1,10 +1,6 @@
 package com.example.demo.entity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,29 +13,33 @@ import javax.validation.constraints.NotBlank;
 
 import org.hibernate.validator.constraints.Length;
 
+import com.example.demo.utility.Message;
+
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Setter
 @Getter
+@EqualsAndHashCode
 public class User {
 	@Id
 	private String id;
 
-	@NotBlank(message="Please provide a username")
-	@Length(min=2, max=45, message="Invalid username - Username must contain more than 1 and less than 46 characters")
+	@NotBlank(message=Message.VALIDATE_USERNAME_NOT_BLANK)
+	@Length(min=2, max=45, message=Message.VALIDATE_USERNAME_LENGTH)
 	@ApiModelProperty(value="The unique username of the User")
 	private String username;
 
-	@NotBlank(message="Please provide a password")
-	//@Length(min=5, max=25, message="Invalid password - Password atleast be 5 characters long and should contains less than or equals to 25 characeters")
+	@NotBlank(message=Message.VALIDATE_PASSWORD_NOT_BLANK)
+	//@Length(min=5, max=25, message=Message.VALIDATE_PASSWORD_LENGTH)
 	@ApiModelProperty(value = "The User's password")
 	private String password;
 
-	@NotBlank(message="Please provide an email")
-	@Email(message = "Invalid email")
+	@NotBlank(message=Message.VALIDATE_EMAIL_NOT_BLANK)
+	@Email(message = Message.VALIDATE_EMAIL)
 	@ApiModelProperty(value = "The User's email")
 	private String email;
 
@@ -50,33 +50,4 @@ public class User {
 			  joinColumns = @JoinColumn(name = "user_id"), 
 			  inverseJoinColumns = @JoinColumn(name = "authority_id"))
 	private List<Authority> authorities;
-
-	@Override
-	public int hashCode() {
-		authorities.forEach(authority -> authority.setUsers(new ArrayList<>()));
-		return Objects.hash(authorities, email, id, password, username);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		User other = (User) obj;
-		authorities.forEach(authority -> authority.setUsers(new ArrayList<>()));
-		other.getAuthorities().forEach(authority -> authority.setUsers(new ArrayList<>()));
-		return Objects.equals(authorities, other.authorities) && Objects.equals(email, other.email)
-				&& Objects.equals(id, other.id) && Objects.equals(password, other.password)
-				&& Objects.equals(username, other.username);
-	}
-
-	@Override
-	public String toString() {
-		authorities.forEach(authority -> authority.setUsers(new ArrayList<>()));
-		return "User [id=" + id + ", username=" + username + ", password=" + password + ", email=" + email
-				+ ", authorities=" + authorities + "]";
-	}
 }

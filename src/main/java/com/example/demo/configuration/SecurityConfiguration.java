@@ -15,6 +15,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import com.example.demo.security.DemoAuthenticationProvider;
 
 @Configuration
+@SuppressWarnings("deprecation")
 public class SecurityConfiguration  extends WebSecurityConfigurerAdapter {
 	
 	@Autowired

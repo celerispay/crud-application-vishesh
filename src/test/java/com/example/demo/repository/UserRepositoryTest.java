@@ -12,10 +12,7 @@ import com.example.demo.entity.User;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @DataJpaTest
 @Sql(scripts = "classpath:insert.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
@@ -38,12 +35,10 @@ class UserRepositoryTest {
 		Authority a1 = new Authority();
 		a1.setId("ccaf4000-e8c1-4435-aa8b-f0bd98aa60f3");
 		a1.setName("alpha");
-		a1.setUsers(new ArrayList<>());
 		
 		Authority a2 = new Authority();
 		a2.setId("dd18101d-241f-43d1-bb2a-0116a7f5a548");
 		a2.setName("beta");
-		a2.setUsers(new ArrayList<>());
 		
 		user.setAuthorities(List.of(a1, a2));
 		
@@ -57,17 +52,11 @@ class UserRepositoryTest {
 	}
 	
 	@Test
-	public void findByUsername_checkEverythinExceptAuthorities() {
+	public void findByUsername() {
 		User user = userRepository.findByUsername("foo").get();
-		user.setAuthorities(new ArrayList<>());
-		this.user.setAuthorities(new ArrayList<>());
-		assertThat(user.equals(this.user)).isTrue();
-	}
-	
-	@Test
-	public void findByUsername_checkAuthorities() {
-		User user = userRepository.findByUsername("foo").get();
-		assertThat(user.toString()).isEqualTo(this.user.toString());
+		assertThat(user)
+			.usingRecursiveComparison()
+			.isEqualTo(this.user);
 	}
 	
 	@Test

@@ -21,6 +21,7 @@ public class DocumentationConfiguration {
 		.apiInfo(apiDetails());
 	}
 	
+	@SuppressWarnings("deprecation")
 	private ApiInfo apiDetails() {
 		return new ApiInfo("Demo Application", "Endpoint Documentation", "1.0", "www.demo@gmail.com", "Jack", "Free to user", "www.demo@gmail.com");
 	}
