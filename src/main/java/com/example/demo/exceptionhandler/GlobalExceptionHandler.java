@@ -13,10 +13,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.example.demo.exception.UserException;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 

@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 
-import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -17,13 +16,11 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
 import com.example.demo.exception.UserException;
 import com.example.demo.exceptionhandler.response.InvalidUserExceptionResponse;
-import com.example.demo.exceptionhandler.response.ValidationExceptionResponse;
 import com.example.demo.security.DemoAuthenticationProvider;
 import com.example.demo.service.UserService;
 import com.example.demo.utility.Message;
@@ -105,18 +102,4 @@ class UserControllerTest {
 					objectMapper.writeValueAsString(invalidUserExceptionResponse)
 				);
 	}
-	
-//	@Test
-//	public void addUser_invalideUser() throws Exception {
-//		List<String> violations = List.of(Message.VALIDATE_USERNAME_NOT_BLANK, Message.VALIDATE_USERNAME_LENGTH);
-//		ValidationExceptionResponse validationExceptionResponse = new ValidationExceptionResponse(violations);
-//		user.setUsername("");
-//		Mockito.when(userService.addUser(user)).thenThrow(MethodArgumentNotValidException.class);
-//		MockHttpServletResponse response = mockMvc.perform(
-//					MockMvcRequestBuilders.post("/demo/adduser", user)
-//				).andReturn().getResponse();
-//		assertThat(response.getContentAsString()).isEqualTo(
-//				objectMapper.writeValueAsString(validationExceptionResponse)
-//				);
-//	}
 }
