@@ -8,6 +8,7 @@ import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
 import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.launch.JobOperator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,9 @@ public class JobService {
 
 	@Autowired
 	private JobLauncher jobLauncher;
+
+	@Autowired
+	private JobOperator jobOperator;
 	
 	@Autowired
 	private Job firstJob;
@@ -40,6 +44,10 @@ public class JobService {
 		} else {
 			System.out.println("Invalid job name");
 		}
+	}
+	
+	public void stopJob(Long executionId) throws Exception {
+		jobOperator.stop(executionId);
 	}
 	
 }
