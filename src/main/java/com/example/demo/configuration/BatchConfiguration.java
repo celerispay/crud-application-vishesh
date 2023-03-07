@@ -1,6 +1,11 @@
 package com.example.demo.configuration;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Date;
+
+import javax.sql.DataSource;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -10,18 +15,28 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
+import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
+import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.file.FlatFileFooterCallback;
+import org.springframework.batch.item.file.FlatFileHeaderCallback;
 import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.LineMapper;
+import org.springframework.batch.item.file.FlatFileItemWriter;
+import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
 import org.springframework.batch.item.file.mapping.DefaultLineMapper;
+import org.springframework.batch.item.file.transform.BeanWrapperFieldExtractor;
+import org.springframework.batch.item.file.transform.DelimitedLineAggregator;
 import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
-import org.springframework.batch.item.file.transform.LineTokenizer;
+import org.springframework.batch.item.json.JacksonJsonObjectMarshaller;
 import org.springframework.batch.item.json.JacksonJsonObjectReader;
+import org.springframework.batch.item.json.JsonFileItemWriter;
 import org.springframework.batch.item.json.JsonItemReader;
 import org.springframework.batch.repeat.RepeatStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.model.Student;
@@ -45,6 +60,9 @@ public class BatchConfiguration {
 
 	@Autowired
 	private FirstItemWriter firstItemWriter;
+
+	@Autowired
+	private DataSource dataSource;
 	
 	@Bean
 	public Job firstJob() {
@@ -58,9 +76,12 @@ public class BatchConfiguration {
 	public Step firstChunkStep() {
 		return stepBuilderFactory.get("First Chunk Step")
 				.<Student, Student>chunk(3)
-				.reader(jsonItemReader())
+				.reader(flatFileItemReader())
 				//.processor(firstItemProcessor)
-				.writer(firstItemWriter)
+				.writer(jsonFileItemWriter())
+				.faultTolerant()
+				.skip(FlatFileParseException.class)
+				.skipLimit(Integer.MAX_VALUE)
 				.build();
 	}
 	
@@ -114,6 +135,87 @@ public class BatchConfiguration {
 		itemReader.setJsonObjectReader(objectReader);
 		
 		return itemReader;
+	}
+	
+	public JdbcCursorItemReader<Student> jdbcCursorItemReader() {
+		JdbcCursorItemReader<Student> jdbcCursorItemReader = new JdbcCursorItemReader<>();
+		
+		jdbcCursorItemReader.setDataSource(dataSource);
+		jdbcCursorItemReader.setSql("select id, first_name as firstName, last_name as lastName, email from student");
+		
+		BeanPropertyRowMapper<Student> beanPropertyRowMapper = new BeanPropertyRowMapper<>();
+		beanPropertyRowMapper.setMappedClass(Student.class);
+		
+		jdbcCursorItemReader.setRowMapper(beanPropertyRowMapper);
+		
+		jdbcCursorItemReader.setCurrentItemCount(3);
+		jdbcCursorItemReader.setMaxItemCount(8);
+		
+		return jdbcCursorItemReader;
+	}
+
+	public FlatFileItemWriter<Student> fileItemWriter() {
+		FlatFileItemWriter<Student> fileItemWriter = new FlatFileItemWriter<>();
+	
+		File file = new File("/home/vishesh/Documents/student.csv");
+		FileSystemResource fileSystemResource = new FileSystemResource(file);
+		
+		fileItemWriter.setResource(fileSystemResource);
+		
+		FlatFileHeaderCallback headerCallback = new FlatFileHeaderCallback() {
+			
+			@Override
+			public void writeHeader(Writer writer) throws IOException {
+				writer.write("Id|First Name|Last Name|Email");
+			}
+		};
+		
+		fileItemWriter.setHeaderCallback(headerCallback);
+		
+		DelimitedLineAggregator<Student> aggregator = new DelimitedLineAggregator<>();
+		BeanWrapperFieldExtractor<Student> extractor = new BeanWrapperFieldExtractor<>();
+		extractor.setNames(new String[] {"id", "firstName", "lastName", "email"});
+		aggregator.setFieldExtractor(extractor);
+		aggregator.setDelimiter("|");
+		
+		fileItemWriter.setLineAggregator(aggregator);
+		
+		FlatFileFooterCallback footerCallback = new FlatFileFooterCallback() {
+			
+			@Override
+			public void writeFooter(Writer writer) throws IOException {
+				writer.write("Creaetd @ " + new Date());
+			}
+		};
+		
+		fileItemWriter.setFooterCallback(footerCallback);
+		
+		return fileItemWriter;
+	}
+	
+	public JsonFileItemWriter<Student> jsonFileItemWriter() {
+		File file = new File("/home/vishesh/Documents/student.json");
+		FileSystemResource fileSystemResource = new FileSystemResource(file);
+		
+		JacksonJsonObjectMarshaller<Student> marshaller = new JacksonJsonObjectMarshaller<>();
+		
+		JsonFileItemWriter<Student> fileItemWriter = new JsonFileItemWriter<>(fileSystemResource, marshaller);
+		
+		return fileItemWriter;
+	}
+
+	public JdbcBatchItemWriter<Student> jdbcBatchItemWriter() {
+		JdbcBatchItemWriter<Student> jdbcBatchItemWriter = new JdbcBatchItemWriter<>();
+		
+		jdbcBatchItemWriter.setDataSource(dataSource);
+		jdbcBatchItemWriter.setSql("insert into student(id, first_name, last_name, email) values(:id, :firstName, :lastName, :email)");
+	
+		BeanPropertyItemSqlParameterSourceProvider<Student> sourceProvider = new BeanPropertyItemSqlParameterSourceProvider<>();
+		
+		jdbcBatchItemWriter.setItemSqlParameterSourceProvider(sourceProvider);
+		
+		jdbcBatchItemWriter.afterPropertiesSet();
+		return jdbcBatchItemWriter;
 	}
 	
 	public Tasklet secondTasklet() {
