@@ -14,6 +14,7 @@ import org.springframework.batch.core.configuration.annotation.JobBuilderFactory
 import org.springframework.batch.core.configuration.annotation.StepBuilderFactory;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy;
 import org.springframework.batch.core.step.tasklet.Tasklet;
 import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
@@ -39,6 +40,7 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.stereotype.Component;
 
+import com.example.demo.listener.SkipListener;
 import com.example.demo.model.Student;
 import com.example.demo.processor.FirstItemProcessor;
 import com.example.demo.reader.FirstItemReader;
@@ -64,6 +66,9 @@ public class BatchConfiguration {
 	@Autowired
 	private DataSource dataSource;
 	
+	@Autowired
+	private SkipListener skipListener;
+	
 	@Bean
 	public Job firstJob() {
 		return jobBuilderFactory.get("First Job")
@@ -77,11 +82,13 @@ public class BatchConfiguration {
 		return stepBuilderFactory.get("First Chunk Step")
 				.<Student, Student>chunk(3)
 				.reader(flatFileItemReader())
-				//.processor(firstItemProcessor)
+				.processor(firstItemProcessor)
 				.writer(jsonFileItemWriter())
 				.faultTolerant()
 				.skip(FlatFileParseException.class)
-				.skipLimit(Integer.MAX_VALUE)
+				//.skipLimit(Integer.MAX_VALUE)
+				.skipPolicy(new AlwaysSkipItemSkipPolicy())
+				.listener(skipListener)
 				.build();
 	}
 	
@@ -102,12 +109,12 @@ public class BatchConfiguration {
 	 *		- Needs a LineTokenizer & FieldSetMapper 							
 	 */
 	public FlatFileItemReader<Student> flatFileItemReader() {
-		File file = new File("/home/vishesh/Desktop/code/crud-application-vishesh/file.csv");
+		File file = new File("/home/vishesh/Documents/reader/read.csv");
 		
 		FlatFileItemReader<Student> flatFileItemReader = new FlatFileItemReader<>();
 		flatFileItemReader.setResource(new FileSystemResource(file));
 		
-		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer("|");
+		DelimitedLineTokenizer lineTokenizer = new DelimitedLineTokenizer(",");
 		lineTokenizer.setNames("ID", "First Name", "Last Name", "Email");
 		
 		BeanWrapperFieldSetMapper<Student> mapper = new BeanWrapperFieldSetMapper<>();
@@ -176,7 +183,7 @@ public class BatchConfiguration {
 		BeanWrapperFieldExtractor<Student> extractor = new BeanWrapperFieldExtractor<>();
 		extractor.setNames(new String[] {"id", "firstName", "lastName", "email"});
 		aggregator.setFieldExtractor(extractor);
-		aggregator.setDelimiter("|");
+		aggregator.setDelimiter(",");
 		
 		fileItemWriter.setLineAggregator(aggregator);
 		
@@ -194,7 +201,7 @@ public class BatchConfiguration {
 	}
 	
 	public JsonFileItemWriter<Student> jsonFileItemWriter() {
-		File file = new File("/home/vishesh/Documents/student.json");
+		File file = new File("/home/vishesh/Documents/writer/write.json");
 		FileSystemResource fileSystemResource = new FileSystemResource(file);
 		
 		JacksonJsonObjectMarshaller<Student> marshaller = new JacksonJsonObjectMarshaller<>();
