@@ -1,3 +1,4 @@
 DELETE FROM user_authority;
 DELETE FROM authority;
-DELETE FROM user;
+DELETE FROM transaction;
+--DELETE FROM user;

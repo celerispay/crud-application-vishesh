@@ -5,11 +5,10 @@ import java.io.FileWriter;
 
 import org.springframework.batch.core.annotation.OnSkipInProcess;
 import org.springframework.batch.core.annotation.OnSkipInRead;
-import org.springframework.batch.core.annotation.OnSkipInWrite;
 import org.springframework.batch.item.file.FlatFileParseException;
 import org.springframework.stereotype.Component;
 
-import com.example.demo.model.Student;
+import com.example.demo.entity.Transaction;
 
 @Component
 public class SkipListener {
@@ -22,15 +21,11 @@ public class SkipListener {
 	}
 
 	@OnSkipInProcess
-	public void skipInProcess(Student student, Throwable th) {
+	public void skipInProcess(Transaction transaction, Throwable th) {
 		if (th instanceof NullPointerException) {
 			createFile("/home/vishesh/Documents/bad-record/process.csv", 
-					student.toString());
+					transaction.toString());
 		}
-	}
-
-	@OnSkipInWrite
-	public void skipInWrite(Throwable th) {
 	}
 	
 	public void createFile(String filePath, String data) {

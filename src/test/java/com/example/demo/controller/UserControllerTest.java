@@ -26,7 +26,7 @@ import com.example.demo.service.UserService;
 import com.example.demo.utility.Message;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@WebMvcTest(UserController.class)
+//@WebMvcTest(UserController.class)
 @AutoConfigureMockMvc
 class UserControllerTest {
 	@MockBean

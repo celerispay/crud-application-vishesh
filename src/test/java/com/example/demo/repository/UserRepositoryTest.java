@@ -9,6 +9,7 @@ import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 
 import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
+import com.example.demo.utility.Util;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -27,7 +28,7 @@ class UserRepositoryTest {
 	@BeforeEach
 	public void initalizeUser() {
 		User user = new User();
-		user.setId("e983d0a6-d9fe-43bc-a494-8f103087760b");
+		user.setId("e983d0a6-d9fe-43bc-a494-8f103087760z");
 		user.setUsername("foo");
 		user.setPassword("$2a$10$aPu1RcOTV8NrLsmQD0FpUeILLjnOg6vJ4ZudatCpPmud7TFS3CD9G");
 		user.setEmail("foo@abc.com");
@@ -43,6 +44,21 @@ class UserRepositoryTest {
 		user.setAuthorities(List.of(a1, a2));
 		
 		this.user = user;
+	}
+
+	@Test
+	public void insertTest() {
+		User user = new User();
+		user.setId(Util.getId());
+		userRepository.save(user);
+		long size = userRepository.count();
+		assertThat(size).isEqualTo(1);
+	}
+
+	@Test
+	public void findAllTest() {
+		long size = userRepository.count();
+		assertThat(size).isEqualTo(1);
 	}
 	
 	@Test
