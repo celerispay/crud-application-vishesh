@@ -7,9 +7,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@EnableBatchProcessing
+//@EnableBatchProcessing
 @EnableAsync
-@EnableScheduling
+//@EnableScheduling
 public class DemoApplication {	
 	public static void main(String[] args) {
 		SpringApplication.run(DemoApplication.class, args);

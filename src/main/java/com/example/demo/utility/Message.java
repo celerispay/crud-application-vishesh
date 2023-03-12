@@ -12,4 +12,11 @@ public class Message {
 	public static final String VALIDATE_PASSWORD_LENGTH = "Invalid password - Password atleast be 5 characters long and should contains less than or equals to 25 characeters";
 	public static final String VALIDATE_EMAIL_NOT_BLANK = "Please provide an email";
 	public static final String VALIDATE_EMAIL = "Invalid email";
+
+        public static final String EMAIL_EXISTS =  "Email already exists";
+	public static final String FIRST_NAME_NOT_BLANK = "First name cannot be blank";
+	public static final String LAST_NAME_NOT_BLANK = "Last name cannot be blank";
+	public static final String EMAIL_NOT_BLANK = "Email cannot be blank";
+	public static final String INVALID_EMAIL = "Invalid email";
+
 }

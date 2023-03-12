@@ -15,11 +15,12 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Transaction {
-	@Id
-	private String id;
-	private String transactionReference;
-	private BigDecimal amount;
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn
-	private User user;
+    @Id
+    private String id;
+    private String transactionReference;
+    private BigDecimal amount;
+   
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn
+    private User user;
 }

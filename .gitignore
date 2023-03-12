@@ -40,3 +40,4 @@ out/
 /logs
 temp.txt
 *.txt
+*.sh

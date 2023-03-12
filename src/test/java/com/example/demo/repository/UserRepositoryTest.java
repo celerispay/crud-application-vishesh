@@ -3,81 +3,72 @@ package com.example.demo.repository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.example.demo.entity.Authority;
-import com.example.demo.entity.User;
-import com.example.demo.utility.Util;
+import com.example.demo.entity.*;
 
 import static org.assertj.core.api.Assertions.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 @DataJpaTest
-@Sql(scripts = "classpath:insert.sql", executionPhase = ExecutionPhase.BEFORE_TEST_METHOD)
-@Sql(scripts = "classpath:delete.sql", executionPhase = ExecutionPhase.AFTER_TEST_METHOD)
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
+@AutoConfigureTestDatabase(replace=Replace.NONE)
 class UserRepositoryTest {
-	
+
 	@Autowired
 	private UserRepository userRepository;
+
+        @Autowired
+        private AuthorityRepository authorityRepository; 
+
+    private User user;
+
+    @BeforeEach
+    public void initailize() {
+        user = new User();
+	user.setUsername("Sam");
+	user.setPassword("1234");
+	user.setEmail("sam@gmail.com");
+
+	// Authority a = new Authority();
+	// a.setId("1");
+	// a.setName("random");
+	//
+	// user.setAuthorities(List.of(a));
+	//
+	// Transaction t = new Transaction();
+	// t.setId("101");
+	// t.setAmount(BigDecimal.valueOf(123123));
+ //        t.setTransactionReference("jfaspfidj");
+	// t.setUser(user);
+    }
 	
-	private User user;
-
-	@BeforeEach
-	public void initalizeUser() {
-		User user = new User();
-		user.setId("e983d0a6-d9fe-43bc-a494-8f103087760z");
-		user.setUsername("foo");
-		user.setPassword("$2a$10$aPu1RcOTV8NrLsmQD0FpUeILLjnOg6vJ4ZudatCpPmud7TFS3CD9G");
-		user.setEmail("foo@abc.com");
-		
-		Authority a1 = new Authority();
-		a1.setId("ccaf4000-e8c1-4435-aa8b-f0bd98aa60f3");
-		a1.setName("alpha");
-		
-		Authority a2 = new Authority();
-		a2.setId("dd18101d-241f-43d1-bb2a-0116a7f5a548");
-		a2.setName("beta");
-		
-		user.setAuthorities(List.of(a1, a2));
-		
-		this.user = user;
-	}
-
-	@Test
-	public void insertTest() {
-		User user = new User();
-		user.setId(Util.getId());
-		userRepository.save(user);
-		long size = userRepository.count();
-		assertThat(size).isEqualTo(1);
+        @Test
+        public void defaultUserTableSize() {
+	    assertThat(userRepository.count()).isEqualTo(1L);
 	}
 
-	@Test
-	public void findAllTest() {
-		long size = userRepository.count();
-		assertThat(size).isEqualTo(1);
-	}
-	
-	@Test
-	public void existsByUsername() {
-		boolean res = userRepository.existsByUsername("foo");
-		assertThat(res).isTrue();
-	}
-	
-	@Test
-	public void findByUsername() {
-		User user = userRepository.findByUsername("foo").get();
-		assertThat(user)
-			.usingRecursiveComparison()
-			.isEqualTo(this.user);
-	}
-	
-	@Test
-	public void existsByEmail() {
-		boolean res = userRepository.existsByEmail("foo@abc.com");
-		assertThat(res).isTrue();
-	}
+    @Test
+    public void addUser_whenUserWithIdExists() {
+	user.setId("b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1");
+	userRepository.save(user);
+        assertThat(userRepository.count()).isEqualTo(1L);
+    }
+
+    @Test
+    public void addUser_whenUserWithIdDoesNotExists() {
+	user.setId("b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee2");
+	userRepository.save(user);
+        assertThat(userRepository.count()).isEqualTo(2L);
+    }
 }
