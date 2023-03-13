@@ -6,30 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.example.demo.entity.*;
 
 import static org.assertj.core.api.Assertions.*;
 
-import java.math.BigDecimal;
 import java.util.List;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import java.util.Optional;
+import java.util.UUID;
 
 @DataJpaTest
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
 @AutoConfigureTestDatabase(replace=Replace.NONE)
 class UserRepositoryTest {
 
 	@Autowired
 	private UserRepository userRepository;
 
-        @Autowired
-        private AuthorityRepository authorityRepository; 
+	@Autowired
+	private AuthorityRepository authorityRepository; 
 
     private User user;
 
@@ -39,36 +33,83 @@ class UserRepositoryTest {
 	user.setUsername("Sam");
 	user.setPassword("1234");
 	user.setEmail("sam@gmail.com");
-
-	// Authority a = new Authority();
-	// a.setId("1");
-	// a.setName("random");
-	//
-	// user.setAuthorities(List.of(a));
-	//
-	// Transaction t = new Transaction();
-	// t.setId("101");
-	// t.setAmount(BigDecimal.valueOf(123123));
- //        t.setTransactionReference("jfaspfidj");
-	// t.setUser(user);
     }
 	
-        @Test
-        public void defaultUserTableSize() {
+	@Test
+	public void defaultUserTableSize() {
 	    assertThat(userRepository.count()).isEqualTo(1L);
+	}
+   
+	@Test
+	public void addUser_whenUserWithIdExists_countUser() {
+    	String userId = "b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1";
+    	user.setId(userId);
+    	userRepository.save(user);
+        assertThat(userRepository.count()).isEqualTo(1L);
 	}
 
     @Test
-    public void addUser_whenUserWithIdExists() {
-	user.setId("b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1");
-	userRepository.save(user);
-        assertThat(userRepository.count()).isEqualTo(1L);
+    public void addUser_whenUserWithIdExists_checkUserDetails() {
+    	String userId = "b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1";
+		user.setId(userId);
+		userRepository.save(user);
+		Optional<User> u = userRepository.findById(userId);
+		assertThat(u).isPresent()
+		.get()
+		.hasFieldOrPropertyWithValue("id", userId)
+		.hasFieldOrPropertyWithValue("username", user.getUsername())
+		.hasFieldOrPropertyWithValue("password", user.getPassword())
+		.hasFieldOrPropertyWithValue("authorities", user.getAuthorities());
     }
-
+   
     @Test
-    public void addUser_whenUserWithIdDoesNotExists() {
-	user.setId("b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee2");
-	userRepository.save(user);
+    public void addUser_whenUserWithIdDoesNotExists_countUser() {
+		String userId = UUID.randomUUID().toString();
+    	user.setId(userId);
+    	userRepository.save(user);
         assertThat(userRepository.count()).isEqualTo(2L);
+     
+    }
+    
+    @Test
+    public void addUser_whenUserWithIdDoesNotExists_checkUserDetails() {
+		String userId = UUID.randomUUID().toString();
+		user.setId(userId);
+		userRepository.save(user);
+		Optional<User> u = userRepository.findById(userId);
+		assertThat(u).isPresent()
+		.get()
+		.hasFieldOrPropertyWithValue("id", userId)
+		.hasFieldOrPropertyWithValue("username", user.getUsername())
+		.hasFieldOrPropertyWithValue("password", user.getPassword())
+		.hasFieldOrPropertyWithValue("authorities", user.getAuthorities());
+    }
+   
+    @Test
+    public void addUser_whenUserWithIdDoesNotExists_checkAuthorities() {
+    	String userId = UUID.randomUUID().toString();
+		user.setId(userId);
+		
+		Authority a = new Authority();
+		String authorityId = UUID.randomUUID().toString();
+		a.setId(authorityId);
+		a.setName("write");
+		
+		
+		List<Authority> authorities = List.of(a);
+		
+		authorityRepository.saveAll(authorities);
+		
+		user.setAuthorities(authorities);
+		
+		userRepository.save(user);
+		Optional<User> u = userRepository.findById(userId);
+		
+		assertThat(u).isPresent()
+		.get()
+		.extracting(user -> user.getAuthorities())
+		.usingRecursiveComparison()
+		.ignoringCollectionOrder()
+		.isEqualTo(authorities);
     }
 }

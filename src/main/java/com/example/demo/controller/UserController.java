@@ -4,8 +4,6 @@ package com.example.demo.controller;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,10 +42,5 @@ public class UserController {
 	public User addUser(@Valid @RequestBody User user) throws UserException, AuthorityException {
 		log.debug("UserController triggered");
 		return userService.addUser(user);
-	}
-	
-	@GetMapping("/msg")
-	public ResponseEntity<String> getMsg() {
-		return new ResponseEntity<>("The cat is in the box", HttpStatus.OK);
 	}
 }

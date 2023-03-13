@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
-import com.example.demo.exception.AuthorityException;
 import com.example.demo.exception.UserException;
+import com.example.demo.repository.AuthorityRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utility.Message;
 import com.example.demo.utility.Util;
@@ -17,8 +17,8 @@ public class UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-	
-	public User addUser(User user) throws UserException, AuthorityException {
+
+	public User addUser(User user) throws UserException {
 		boolean usernameExist = userRepository.existsByUsername(user.getUsername());
 		if (usernameExist) throw new UserException(Message.USERNAME_TAKEN);
 		
@@ -35,10 +35,7 @@ public class UserService {
 	public User getUser(String username) throws UserException {
 		Optional<User> optionalUser = userRepository.findByUsername(username);
 		if (optionalUser.isPresent()) {
-			User user = optionalUser.get();
-			user.getTransactions()
-				.forEach(transaction -> transaction.setUser(null));
-			return user;
+			return optionalUser.get();
 		} else {
 			throw new UserException(Message.USER_NOT_FOUND);
 		}

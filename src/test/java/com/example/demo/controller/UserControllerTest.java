@@ -1,105 +1,88 @@
 package com.example.demo.controller;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
+import static org.mockito.ArgumentMatchers.any;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
-import com.example.demo.exception.UserException;
-import com.example.demo.exceptionhandler.response.InvalidUserExceptionResponse;
 import com.example.demo.security.DemoAuthenticationProvider;
 import com.example.demo.service.UserService;
 import com.example.demo.utility.Message;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-//@WebMvcTest(UserController.class)
-@AutoConfigureMockMvc
+@WebMvcTest
 class UserControllerTest {
+
+	@Autowired
+	private MockMvc mockMvc;
+
 	@MockBean
 	private UserService userService;
 
 	@MockBean
-	private DemoAuthenticationProvider demoAuthenticationProvider;
-
-	@Autowired
-	private MockMvc mockMvc;
-	
-	private ObjectMapper objectMapper = new ObjectMapper();
+	private DemoAuthenticationProvider authenticationProvider;
 	
 	private User user;
-
+	
 	@BeforeEach
-	public void initalizeUser() {
-		User user = new User();
-		user.setId("e983d0a6-d9fe-43bc-a494-8f103087760b");
-		user.setUsername("foo");
-		user.setPassword("$2a$10$aPu1RcOTV8NrLsmQD0FpUeILLjnOg6vJ4ZudatCpPmud7TFS3CD9G");
-		user.setEmail("foo@abc.com");
-		
-		Authority a1 = new Authority();
-		a1.setId("ccaf4000-e8c1-4435-aa8b-f0bd98aa60f3");
-		a1.setName("alpha");
-		
-		Authority a2 = new Authority();
-		a2.setId("dd18101d-241f-43d1-bb2a-0116a7f5a548");
-		a2.setName("beta");
-		
-		user.setAuthorities(List.of(a1, a2));
-		
-		this.user = user;
-	}
-
-	@Test
-	public void getUserByUsername_whenUserExists_checkStatus() throws Exception {
-		Mockito.when(userService.getUser("foo")).thenReturn(user);
-		MockHttpServletResponse response = mockMvc.perform(
-					MockMvcRequestBuilders.get("/demo/user/foo").accept(MediaType.APPLICATION_JSON)
-				).andReturn().getResponse();
-	}
-
-	@Test
-	public void getUserByUsername_whenUserExists_checkBody() throws Exception {
-		Mockito.when(userService.getUser("foo")).thenReturn(user);
-		MockHttpServletResponse response = mockMvc.perform(
-					MockMvcRequestBuilders.get("/demo/user/foo").accept(MediaType.APPLICATION_JSON)
-				).andReturn().getResponse();
-		assertThat(response.getContentAsString()).isEqualTo(
-			objectMapper.writeValueAsString(user)
-		);
+	public void initalize() {
+		user = new User();
+		user.setUsername("Sam");
+		user.setPassword("1234");
+		user.setEmail("sam@gmail.com");
 	}
 	
 	@Test
-	public void getUserByUsername_whenUserDoesnotExists_checkStatus() throws Exception {
-		Mockito.when(userService.getUser("bar")).thenThrow(new UserException(Message.USER_NOT_FOUND));
-		MockHttpServletResponse response = mockMvc.perform(
-					MockMvcRequestBuilders.get("/demo/user/bar").accept(MediaType.APPLICATION_JSON)
-				).andReturn().getResponse();
-		assertThat(response.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+	public void addUser_whenBlankFields_returnCorrectResponse() throws Exception {
+		String s = "{ \"username\": \"\", \"password\":\"\", \"email\": \"\"}";
+		
+		MockHttpServletRequestBuilder request =  MockMvcRequestBuilders.post("/demo/addUser")
+		.contentType(MediaType.APPLICATION_JSON)
+		.characterEncoding("utf-8")
+		.content(s);
+		
+		mockMvc.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isBadRequest())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.username").value(Message.USERNAME_NOT_BLANK))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.password").value(Message.PASSWORD_NOT_BLANK))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(Message.EMAIL_NOT_BLANK));
 	}
-	
+
 	@Test
-	public void getUserByUsername_whenUserDoesnotExists_checkBody() throws Exception {
-		InvalidUserExceptionResponse invalidUserExceptionResponse = new InvalidUserExceptionResponse(Message.USER_NOT_FOUND);
-		Mockito.when(userService.getUser("bar")).thenThrow(new UserException(Message.USER_NOT_FOUND));
-		MockHttpServletResponse response = mockMvc.perform(
-					MockMvcRequestBuilders.get("/demo/user/bar").accept(MediaType.APPLICATION_JSON)
-				).andReturn().getResponse();
-		assertThat(response.getContentAsString()).isEqualTo(
-					objectMapper.writeValueAsString(invalidUserExceptionResponse)
-				);
+	public void addUser_whenInvalidEamil_returnCorrectResponse() throws Exception {
+		String s = "{ \"username\": \"Sam\", \"password\":\"1234\", \"email\": \"samgmail.com\"}";
+		
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/addUser")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8")
+				.content(s);
+		
+		mockMvc.perform(request)
+		.andExpect(MockMvcResultMatchers.status().isBadRequest())
+		.andExpect(MockMvcResultMatchers.content().contentType(MediaType.APPLICATION_JSON))
+		.andExpect(MockMvcResultMatchers.jsonPath("$.email").value(Message.INVALID_EMAIL));
+	}
+
+	@Test
+	public void addUser_whenValidUser_returnCorrectResponse() throws Exception {
+		Mockito.when(userService.addUser(any())).thenReturn(user);
+		String s = "{ \"username\": \"Sam\", \"password\":\"1234\", \"email\": \"sam@gmail.com\"}";
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.post("/demo/addUser")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8")
+				.content(s);
+		
+		mockMvc.perform(request)
+		.andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.getUsername()));
 	}
 }

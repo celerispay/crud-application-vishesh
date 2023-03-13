@@ -5,7 +5,6 @@ import java.math.BigDecimal;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.Getter;
@@ -21,6 +20,5 @@ public class Transaction {
     private BigDecimal amount;
    
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
     private User user;
 }

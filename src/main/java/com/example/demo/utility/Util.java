@@ -21,18 +21,12 @@ public class Util {
 	public static void setValues(User user) {
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		user.setId(getId());
-		user.setUsername(user.getUsername().toLowerCase());
 		user.setPassword(encoder.encode(user.getPassword()));
 		
+		Authority a = new Authority();
+		a.setId("5");
+		a.setName("ROLE_USER");
 		
-		Authority a1 = new Authority();
-		a1.setId(getId());
-		a1.setName("USER");
-		
-		Authority a2 = new Authority();
-		a2.setId(getId());
-		a2.setName("ROLE_USER");
-		
-		user.setAuthorities(List.of(a1, a2));
+		user.setAuthorities(List.of(a));
 	}
 }

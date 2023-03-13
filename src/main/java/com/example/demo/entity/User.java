@@ -3,10 +3,8 @@ package com.example.demo.entity;
 import java.util.List;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
@@ -22,10 +20,10 @@ public class User {
     @Id
     private String id;
 
-    @NotBlank
+    @NotBlank(message = Message.USERNAME_NOT_BLANK)
     private String username;
    
-    @NotBlank
+    @NotBlank(message = Message.PASSWORD_NOT_BLANK)
     private String password;
 
     @NotBlank(message = Message.EMAIL_NOT_BLANK)
@@ -34,7 +32,4 @@ public class User {
 
     @ManyToMany
     private List<Authority> authorities;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    private List<Transaction> transactions;
 }
