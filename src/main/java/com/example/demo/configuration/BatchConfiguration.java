@@ -25,8 +25,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import com.example.demo.model.Transaction;
 
 @Configuration
-@EnableBatchProcessing
 @EnableScheduling
+@EnableBatchProcessing
 public class BatchConfiguration {
 	@Autowired
 	private JobBuilderFactory jobBuilderFactory;

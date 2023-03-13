@@ -64,6 +64,7 @@ class UserRepositoryTest {
    
     @Test
     public void addUser_whenUserWithIdDoesNotExists_countUser() {
+    	assertThat(userRepository.count()).isEqualTo(1L);
 		String userId = UUID.randomUUID().toString();
     	user.setId(userId);
     	userRepository.save(user);

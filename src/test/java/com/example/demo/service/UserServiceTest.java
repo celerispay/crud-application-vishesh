@@ -20,6 +20,7 @@ import com.example.demo.entity.User;
 import com.example.demo.exception.UserException;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utility.Message;
+import com.example.demo.utility.Util;
 
 @ExtendWith(MockitoExtension.class)
 @AutoConfigureTestDatabase(replace=Replace.NONE)
@@ -85,11 +86,39 @@ class UserServiceTest {
 		.isInstanceOf(UserException.class)
 		.hasMessage(Message.USER_NOT_FOUND);
 	}
-	
+
+	@Test
 	public void getUser_whenUserExists() throws UserException {
 		Mockito
 		.when(userRepository.findByUsername(user.getUsername()))
 		.thenReturn(Optional.of(user));
 		assertThat(userService.getUser(user.getUsername())).isNotNull();
+	}
+
+	@Test
+	public void updateUser_whenUserDoesNotExists() throws UserException {
+		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(false);
+		user.setId(Util.getId());
+		assertThatThrownBy(() -> userService.updateUser(user))
+		.isInstanceOf(UserException.class)
+		.hasMessage(Message.USER_NOT_FOUND);
+	}
+
+	@Test
+	public void updateUser_whenUserExists() throws UserException {
+		user.setId(Util.getId());
+		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(true);
+		Mockito.when(userRepository.save(user)).thenReturn(user);
+		user.setId(Util.getId());
+		assertThat(userService.updateUser(user).getUsername()).isEqualTo("Sam");
+	}
+
+	@Test
+	public void deleteUser_whenUserDoesNotExists() throws UserException {
+		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(false);
+		String userId = Util.getId();
+		assertThatThrownBy(() -> userService.deleteUser(userId))
+		.isInstanceOf(UserException.class)
+		.hasMessage(Message.USER_NOT_FOUND);
 	}
 }

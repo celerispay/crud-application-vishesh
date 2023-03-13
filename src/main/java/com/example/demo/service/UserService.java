@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
 import com.example.demo.exception.UserException;
-import com.example.demo.repository.AuthorityRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.utility.Message;
 import com.example.demo.utility.Util;
@@ -39,5 +39,20 @@ public class UserService {
 		} else {
 			throw new UserException(Message.USER_NOT_FOUND);
 		}
+	}
+	
+	public User updateUser(User user) throws UserException {
+		if (!userRepository.existsById(user.getId())) {
+			throw new UserException(Message.USER_NOT_FOUND);
+		}
+		return userRepository.save(user);
+	}
+	
+	public Map<String, String> deleteUser(String userId) throws UserException {
+		if (!userRepository.existsById(userId)) {
+			throw new UserException(Message.USER_NOT_FOUND);
+		}
+		userRepository.deleteById(userId);
+		return Map.of("msg", Message.USER_DELETED);
 	}
 }

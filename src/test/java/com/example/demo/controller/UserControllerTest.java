@@ -85,4 +85,17 @@ class UserControllerTest {
 		mockMvc.perform(request)
 		.andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.getUsername()));
 	}
+
+	@Test
+	public void getUserTest() throws Exception {
+		Mockito.when(userService.getUser(Mockito.anyString())).thenReturn(user);
+		String s = "Sam";
+		MockHttpServletRequestBuilder request = MockMvcRequestBuilders.get("/demo/user/jack")
+				.contentType(MediaType.APPLICATION_JSON)
+				.characterEncoding("utf-8")
+				.content(s);
+		
+		mockMvc.perform(request)
+		.andExpect(MockMvcResultMatchers.jsonPath("$.username").value(user.getUsername()));
+	}
 }
