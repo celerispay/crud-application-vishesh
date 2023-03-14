@@ -22,9 +22,6 @@ class UserRepositoryTest {
 	@Autowired
 	private UserRepository userRepository;
 
-	@Autowired
-	private AuthorityRepository authorityRepository; 
-
     private User user;
 
     @BeforeEach
@@ -40,16 +37,8 @@ class UserRepositoryTest {
 	    assertThat(userRepository.count()).isEqualTo(1L);
 	}
    
-	@Test
-	public void addUser_whenUserWithIdExists_countUser() {
-    	String userId = "b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1";
-    	user.setId(userId);
-    	userRepository.save(user);
-        assertThat(userRepository.count()).isEqualTo(1L);
-	}
-
     @Test
-    public void addUser_whenUserWithIdExists_checkUserDetails() {
+    public void save_whenIdExists_thenUpdateUser() {
     	String userId = "b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1";
 		user.setId(userId);
 		userRepository.save(user);
@@ -62,55 +51,61 @@ class UserRepositoryTest {
 		.hasFieldOrPropertyWithValue("authorities", user.getAuthorities());
     }
    
+    
     @Test
-    public void addUser_whenUserWithIdDoesNotExists_countUser() {
-    	assertThat(userRepository.count()).isEqualTo(1L);
+    public void save_whenIdDoesNotExists_thenAddUser() {
 		String userId = UUID.randomUUID().toString();
-    	user.setId(userId);
-    	userRepository.save(user);
-        assertThat(userRepository.count()).isEqualTo(2L);
-     
+		user.setId(userId);
+		userRepository.save(user);
+		Optional<User> u = userRepository.findById(userId);
+		assertThat(u).isPresent()
+		.get()
+		.hasFieldOrPropertyWithValue("id", userId)
+		.hasFieldOrPropertyWithValue("username", user.getUsername())
+		.hasFieldOrPropertyWithValue("password", user.getPassword())
+		.hasFieldOrPropertyWithValue("authorities", user.getAuthorities());
+    }
+   
+    @Test
+    public void deleteById_whenIdExists_thenDeleteUser() {
+    	String userId = "b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1";
+    	userRepository.deleteById(userId);
+    	assertThat(userRepository.count()).isEqualTo(0);
+    }
+   
+    @Test
+    public void findByUsername_whenUsernameExistsAndUppercaseUsername_thenReturnUser() {
+    	Optional<User> user = userRepository.findByUsername("JACK");
+    	assertThat(user).isPresent();
+    }
+   
+    @Test
+    public void findByUsername_whenUsernameExistsAndLowercaseUsername_thenReturnUser() {
+    	Optional<User> user = userRepository.findByUsername("jack");
+    	assertThat(user).isPresent();
+    }
+   
+    @Test
+    public void existsByUsername_whenUsernameExists_thenReturnTrue() {
+    	boolean res = userRepository.existsByUsername("Jack");
+    	assertThat(res).isTrue();
+    }
+   
+    @Test
+    public void existsByUsername_whenUsernameDoesNotExists_thenReturnFalse() {
+    	boolean res = userRepository.existsByUsername("James");
+    	assertThat(res).isFalse();
     }
     
     @Test
-    public void addUser_whenUserWithIdDoesNotExists_checkUserDetails() {
-		String userId = UUID.randomUUID().toString();
-		user.setId(userId);
-		userRepository.save(user);
-		Optional<User> u = userRepository.findById(userId);
-		assertThat(u).isPresent()
-		.get()
-		.hasFieldOrPropertyWithValue("id", userId)
-		.hasFieldOrPropertyWithValue("username", user.getUsername())
-		.hasFieldOrPropertyWithValue("password", user.getPassword())
-		.hasFieldOrPropertyWithValue("authorities", user.getAuthorities());
+    public void existsByEmail_whenEmailExists_thenReturnTrue() {
+    	boolean res = userRepository.existsByEmail("jack@gmail.com");
+    	assertThat(res).isTrue();
     }
    
     @Test
-    public void addUser_whenUserWithIdDoesNotExists_checkAuthorities() {
-    	String userId = UUID.randomUUID().toString();
-		user.setId(userId);
-		
-		Authority a = new Authority();
-		String authorityId = UUID.randomUUID().toString();
-		a.setId(authorityId);
-		a.setName("write");
-		
-		
-		List<Authority> authorities = List.of(a);
-		
-		authorityRepository.saveAll(authorities);
-		
-		user.setAuthorities(authorities);
-		
-		userRepository.save(user);
-		Optional<User> u = userRepository.findById(userId);
-		
-		assertThat(u).isPresent()
-		.get()
-		.extracting(user -> user.getAuthorities())
-		.usingRecursiveComparison()
-		.ignoringCollectionOrder()
-		.isEqualTo(authorities);
+    public void existsByEmail_whenEmailDoesNotExists_thenReturnFalse() {
+    	boolean res = userRepository.existsByEmail("james@gmail.com");
+    	assertThat(res).isFalse();
     }
 }

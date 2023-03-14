@@ -9,6 +9,8 @@ import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
 
 public class Util {
+	private Util() {}
+
 	public static String getId() {
 		return UUID.randomUUID().toString();
 	}

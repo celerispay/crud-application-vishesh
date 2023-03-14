@@ -2,40 +2,36 @@ package com.example.demo.listener;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.io.IOException;
 
-import org.springframework.batch.core.annotation.OnSkipInProcess;
 import org.springframework.batch.core.annotation.OnSkipInRead;
 import org.springframework.batch.item.file.FlatFileParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-
-import com.example.demo.entity.Transaction;
 
 @Component
 public class SkipListener {
+
+	@Value("${batch.skipInRead.filePath}")
+	private String skipInReadFilePath;
+
 	@OnSkipInRead
-	public void skipInRead(Throwable th) {
+	public void skipInRead(Throwable th) throws IOException {
 		if (th instanceof FlatFileParseException) {
-			createFile("/home/vishesh/Documents/bad-record/read.csv", 
+			createFile(skipInReadFilePath, 
 					((FlatFileParseException) th).getInput());
 		}
 	}
 
-	@OnSkipInProcess
-	public void skipInProcess(Transaction transaction, Throwable th) {
-		if (th instanceof NullPointerException) {
-			createFile("/home/vishesh/Documents/bad-record/process.csv", 
-					transaction.toString());
-		}
-	}
-	
-	public void createFile(String filePath, String data) {
+	public void createFile(String filePath, String data) throws IOException {
+		String lineSeperator = System.lineSeparator();
+		File file = new File(filePath);
+		file.createNewFile();
+		FileWriter fileWriter = new FileWriter(file, true);
 		try {
-			File file = new File(filePath);
-			FileWriter fileWriter = new FileWriter(file, true);
-			fileWriter.write(data + "\n");
+			fileWriter.write(data + lineSeperator);
+		} finally {
 			fileWriter.close();
-		} catch(Exception e) {
-			
 		}
 	}
 }

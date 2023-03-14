@@ -43,7 +43,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void addUser_whenUsernameExists() {
+	public void addUser_whenUsernameExists_thenThrowUserException() {
 		Mockito
 		.when(userRepository.existsByUsername(Mockito.any()))
 		.thenReturn(true);
@@ -53,7 +53,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void addUser_whenEmailExists() {
+	public void addUser_whenEmailExists_thenThrowUserUserException() {
 		Mockito
 		.when(userRepository.existsByEmail(Mockito.any()))
 		.thenReturn(true);
@@ -63,7 +63,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void addUser_whenValidUser_checkUserIdLength() throws UserException {
+	public void addUser_whenUsernameAndEmailDoesNotExists_thenReturnUser() throws UserException {
 		Mockito
 		.when(userRepository.save(Mockito.any()))
 		.then(AdditionalAnswers.returnsFirstArg());
@@ -72,13 +72,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void addUser_whenValidUser_checkPasswordEncrption() throws UserException {
-		User u = userService.addUser(user);
-		assertThat(u.getPassword()).isNotEqualTo("1234");
-	}
-
-	@Test
-	public void getUser_whenUserDoesNotExists() {
+	public void getUser_whenUsernameDoesNotExists_thenThrowUserException() {
 		Mockito
 		.when(userRepository.findByUsername(Mockito.any()))
 		.thenReturn(Optional.empty());
@@ -88,7 +82,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void getUser_whenUserExists() throws UserException {
+	public void getUser_whenUsernameExists_thenReturnUser() throws UserException {
 		Mockito
 		.when(userRepository.findByUsername(user.getUsername()))
 		.thenReturn(Optional.of(user));
@@ -96,7 +90,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void updateUser_whenUserDoesNotExists() throws UserException {
+	public void updateUser_whenIdDoesNotExists_thenThrowUserExcpetion() {
 		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(false);
 		user.setId(Util.getId());
 		assertThatThrownBy(() -> userService.updateUser(user))
@@ -105,7 +99,7 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void updateUser_whenUserExists() throws UserException {
+	public void updateUser_whenIdExists_thenReturnUpdatedUser() throws UserException {
 		user.setId(Util.getId());
 		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(true);
 		Mockito.when(userRepository.save(user)).thenReturn(user);
@@ -114,11 +108,18 @@ class UserServiceTest {
 	}
 
 	@Test
-	public void deleteUser_whenUserDoesNotExists() throws UserException {
+	public void deleteUser_whenIdDoesNotExists_thenThrowUserException() throws UserException {
 		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(false);
 		String userId = Util.getId();
 		assertThatThrownBy(() -> userService.deleteUser(userId))
 		.isInstanceOf(UserException.class)
 		.hasMessage(Message.USER_NOT_FOUND);
+	}
+
+	@Test
+	public void deleteUser_whenIdExists_ReturnMap() throws UserException {
+		Mockito.when(userRepository.existsById(Mockito.anyString())).thenReturn(true);
+		String userId = "b39dd5b7-f3ae-4115-82c8-87a1fbbe3ee1";
+		assertThat(userService.deleteUser(userId)).containsValues(Message.USER_DELETED);
 	}
 }

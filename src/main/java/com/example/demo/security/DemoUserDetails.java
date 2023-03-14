@@ -1,25 +1,39 @@
 package com.example.demo.security;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.demo.entity.Authority;
 import com.example.demo.entity.User;
 
 public class DemoUserDetails implements UserDetails {
-	private static final long serialVersionUID = 1L;
-	private final User user;
+	private String username;
+	private String password;
+	private List<Authority> authorities;
+	private boolean isAccountNonExpired;
+	private boolean isAccountNonLocked;
+	private boolean isCredentialNonExpired;
+	private boolean isEnable;
 	
 	public DemoUserDetails(User user) {
-		this.user = user;
+		username = user.getUsername();
+		password = user.getPassword();
+		authorities = user.getAuthorities();
+		isAccountNonExpired = true;
+		isAccountNonLocked = true;
+		isCredentialNonExpired = true;
+		isEnable = true;
+		
 	}
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return user.getAuthorities()
+		return authorities
 		.stream()
 		.map(authority -> new SimpleGrantedAuthority(authority.getName()))
 		.collect(Collectors.toUnmodifiableList());
@@ -27,31 +41,31 @@ public class DemoUserDetails implements UserDetails {
 
 	@Override
 	public String getPassword() {
-		return user.getPassword();
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
-		return user.getUsername();
+		return username;
 	}
 
 	@Override
 	public boolean isAccountNonExpired() {
-		return true;
+		return isAccountNonExpired;
 	}
 
 	@Override
 	public boolean isAccountNonLocked() {
-		return true;
+		return isAccountNonLocked;
 	}
 
 	@Override
 	public boolean isCredentialsNonExpired() {
-		return true;
+		return isCredentialNonExpired;
 	}
 
 	@Override
 	public boolean isEnabled() {
-		return true;
+		return isEnable;
 	}
 }

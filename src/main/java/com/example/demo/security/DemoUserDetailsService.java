@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
-//import com.example.demo.utility.Util;
+import com.example.demo.utility.Message;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -21,11 +21,11 @@ public class DemoUserDetailsService implements UserDetailsService {
 	private UserRepository userRepository;
 
 	@Override
-	public DemoUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public DemoUserDetails loadUserByUsername(String username)  {
 		
 		Supplier<UsernameNotFoundException> supplier = () -> {
 			log.debug("Authentication failed !!");
-			return new UsernameNotFoundException("User not found.");
+			return new UsernameNotFoundException(Message.USER_NOT_FOUND);
 		};
 		
 		User user = userRepository.findByUsername(username)

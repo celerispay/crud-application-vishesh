@@ -5,10 +5,11 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import com.example.demo.utility.Message;
 
 import lombok.extern.log4j.Log4j2;
 
@@ -24,7 +25,7 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 
 	@Override
 	@Transactional(readOnly = true)
-	public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+	public Authentication authenticate(Authentication authentication){
 		log.debug("Authenticating...");
 		
 		String username = authentication.getName();
@@ -38,14 +39,13 @@ public class DemoAuthenticationProvider implements AuthenticationProvider {
 		
 		if (passwordEncoder.matches(rawPassword, user.getPassword())) {
 			log.debug("Authentication successful !!");
-			UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(username,
+			return new UsernamePasswordAuthenticationToken(username,
 					rawPassword,
 					user.getAuthorities()
 					);
-			return token;
 		} else {
 			log.debug("Authentication failed !!");
-			throw new BadCredentialsException("Invalid credentials.");
+			throw new BadCredentialsException(Message.BAD_CREDENTIAL);
 		}
 	}
 

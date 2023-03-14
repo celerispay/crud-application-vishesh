@@ -1,7 +1,5 @@
 package com.example.demo.exceptionhandler;
 
-import com.example.demo.exceptionhandler.response.*;
-
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -28,8 +26,7 @@ public class Handler {
 
 	@ResponseStatus(code =HttpStatus.BAD_REQUEST)	
 	@ExceptionHandler(UserException.class)
-	public InvalidUserExceptionResponse handleInvalidUserException(UserException ex) {
-		String data = ex.getMessage();
-		return new InvalidUserExceptionResponse(data);
+	public UserException handleInvalidUserException(UserException ex) {
+		return ex;
 	}
 }
